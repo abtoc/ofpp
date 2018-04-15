@@ -1,0 +1,12 @@
+mixin generate_fields(form)
+    for field in form
+        if field.type != 'CSRFTokenField'
+            .form-group=  field.label
+                if field.type in ('StringField', 'PasswordField')
+                     | {{ field(class='form-control') }}
+                else
+                     | {{ field() }}
+                for error in field.errors
+                    span.help-block= error
+         else
+            | {{ field() }}
