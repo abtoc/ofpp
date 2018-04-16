@@ -2,7 +2,7 @@ mixin generate_fields(form)
     for field in form
         if field.type != 'CSRFTokenField'
             .form-group=  field.label
-                if field.type in ('StringField', 'PasswordField')
+                if field.type in ('StringField', 'PasswordField', 'TextAreaField')
                      | {{ field(class='form-control') }}
                 else
                      | {{ field() }}
