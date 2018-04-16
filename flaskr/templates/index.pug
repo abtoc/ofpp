@@ -3,4 +3,16 @@ extends layout.pug
 block title
     |Hello World
 block content
-    div= message
+    table.table
+        thead
+            th #
+            th タイトル
+            th 作成日
+            th 更新日
+        tbody
+            for entry in entres
+                tr
+                    td= entry.id
+                    td= entry.title
+                    td= entry.create_at
+                    td= entry.update_at

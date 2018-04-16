@@ -25,7 +25,7 @@ html(lang="ja")
                             input.form-control(type="text",name="q")
                         button.btn.btn-default(type="submit") Search
                     ul.nav.navbar-nav.navbar-right
-                        li: a(href="{{ url_for('menu', id=1) }}") Menu1
+                        li: a(href="{{ url_for('entres_create') }}") New Entry
                         li: a(href="{{ url_for('menu', id=2) }}") Menu2
         .container
             for category, message in get_flashed_messages(with_categories=true)
