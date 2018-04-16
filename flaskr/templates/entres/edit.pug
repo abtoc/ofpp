@@ -1,0 +1,8 @@
+extends entres/layout.pug
+
+block title
+    |Edit Entry
+block content
+    form(method="POST")
+      +generate_fields(form)
+      input.btn.btn-success(type="submit",value="Save")

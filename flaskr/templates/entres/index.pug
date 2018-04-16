@@ -1,4 +1,4 @@
-extends layout.pug
+extends entres/layout.pug
 
 block title
     |Hello World
@@ -9,6 +9,7 @@ block content
             th タイトル
             th 作成日
             th 更新日
+            td
         tbody
             for entry in entres
                 tr
@@ -16,3 +17,7 @@ block content
                     td= entry.title
                     td= entry.create_at
                     td= entry.update_at
+                    td
+                        .row
+                            a.btn.btn-danger.pull-right(href="{{ url_for('entres.destroy',id=entry.id) }}") Del
+                            a.btn.btn-primary.pull-right(href="{{ url_for('entres.edit',id=entry.id) }}") Edit
