@@ -3,7 +3,7 @@ from flaskr        import app,db
 
 @app.route('/')
 def index():
-    return redirect(url_for('entres.index'))
+    return redirect(url_for('persons.index'))
 
-from flaskr  import views_entres
-app.register_blueprint(views_entres.bp)
+from flaskr  import views_persons
+app.register_blueprint(views_persons.bp)

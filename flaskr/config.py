@@ -1,5 +1,5 @@
-#SQLALCHEMY_DATABASE_URI = 'mysql://user:password@host/db?charset=utf8'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///./flaskr.db'
+SQLALCHEMY_DATABASE_URI = 'mysql://tr01:Passw0rd#@localhost/tr01?charset=utf8'
+#SQLALCHEMY_DATABASE_URI = 'sqlite:///./flaskr.db'
 SQLALCHEMY_ECHO = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 # import os

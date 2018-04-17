@@ -1,0 +1,25 @@
+extends persons/layout.pug
+
+block title
+    |メンバー一覧
+block content
+    table.table
+        thead
+            th #
+            th 名前
+            th IDm
+            th 作成日
+            th 更新日
+            td
+        tbody
+            for person in persons
+                tr
+                    td= person.id
+                    td= person.name
+                    td= person.idm
+                    td= person.create_at
+                    td= person.update_at
+                    td
+                        .row
+                            a.btn.btn-danger.pull-right(href="{{ url_for('persons.destroy',id=person.id) }}") 削除
+                            a.btn.btn-primary.pull-right(href="{{ url_for('persons.edit',id=person.id) }}") 編集
