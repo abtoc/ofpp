@@ -12,6 +12,7 @@ class Person(db.Model):
     id        = db.Column(db.Integer, primary_key=True)
     name      = db.Column(db.String(64), nullable=False)
     idm       = db.Column(db.String(16), unique=True)
+    staff     = db.Column(db.Boolean, nullable=False)
     create_at = db.Column(db.DateTime, default =_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
     def __repr__(self):

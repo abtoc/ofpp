@@ -1,7 +1,7 @@
 from flask         import Blueprint
 from flask         import request, redirect, url_for, render_template, flash
 from flask_wtf     import FlaskForm
-from wtforms       import StringField
+from wtforms       import StringField, BooleanField
 from wtforms.validators import DataRequired
 from flaskr        import db
 from flaskr.models import Person
@@ -13,6 +13,7 @@ class PersonForm(FlaskForm):
             DataRequired(message='必須入力です')
         ])
     idm = StringField('IDM')
+    staff = BooleanField('職員')
 
 @bp.route('/')
 def index():
