@@ -1,0 +1,8 @@
+extends workrecs/layout.pug
+
+block title
+    |{{ person.name }} - 勤怠編集
+block content
+    form(method="POST")
+      +generate_fields(form)
+      input.btn.btn-success(type="submit",value="Save")

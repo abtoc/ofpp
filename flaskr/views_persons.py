@@ -9,7 +9,9 @@ from flaskr.models import Person
 bp = Blueprint('persons', __name__, url_prefix="/persons")
 
 class PersonForm(FlaskForm):
-    name = StringField('名前', validators=[DataRequired()])
+    name = StringField('名前', validators=[
+            DataRequired(message='必須入力です')
+        ])
 
 @bp.route('/')
 def index():

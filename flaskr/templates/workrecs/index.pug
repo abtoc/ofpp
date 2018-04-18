@@ -1,0 +1,57 @@
+extends workrecs/layout.pug
+
+block title
+    |{{ person.name }} - 勤務表
+block content
+    table.table.table-striped.table-hover
+        thead
+            tr
+                th: .text-right 日
+                th: .text-center 曜日
+                th: .text-center 開始時刻
+                th: .text-center 終了時刻
+                th: .text-right 勤務時間
+                th: .text-left 他
+                td
+        tbody
+            for item in items
+                tr
+                    td: .text-right= item["dd"]
+                    td: .text-center= item['week']
+                    if item['work_in'] == None:
+                        td
+                    else
+                        td: .text-center= item["work_in"]
+                    if item['work_out'] == None:
+                        td
+                    else
+                        td: .text-center= item["work_out"]
+                    if item['value'] == None:
+                        td: .text-right 0.0
+                    else
+                        td: .text-right= item["value"]
+                    if item['reson'] == None
+                        td
+                    else
+                        td: .text-left= item['reson']
+                    td
+                        .row
+                            a.btn.btn-danger.pull-right(href="{{ url_for('workrecs.destroy', id=person.id, yymm=yymm, dd=item['dd']) }}") 削除
+                            if item['creation']
+                                a.btn.btn-primary.pull-right(href="{{ url_for('workrecs.create', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
+                            else
+                                a.btn.btn-primary.pull-right(href="{{ url_for('workrecs.edit', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
+        tfoot
+            tr
+                th(colspan="2")
+                th: .text-right 合計時間
+                th: .text-right 勤務日数
+                th: .text-right 平均時間
+                th(colspan="2")
+            tr
+                td(colspan="2")
+                td: .text-right= foot['sum']
+                td: .text-right= foot['count']
+                td: .text-right= foot['avg']
+                td(colspan="2")
+

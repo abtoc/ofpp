@@ -5,3 +5,6 @@ Flask-Script
 Flask-Migrate
 WTForms
 pypugjs
+python-dateutil
+PyMySQL
+
