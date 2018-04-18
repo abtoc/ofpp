@@ -49,11 +49,11 @@ def edit(id):
         db.session.add(person)
         try:
           db.session.commit()
-          flash('Entry saved successfully.', 'success')
+          flash('Person saved successfully.', 'success')
           return redirect(url_for('persons.index'))
         except:
           db.session.rollback()
-          flash('Error update entry!', 'danger')
+          flash('Error update person!', 'danger')
     return render_template('persons/edit.pug', form=form)
 
 @bp.route('/<id>/destroy')
@@ -62,8 +62,8 @@ def destroy(id):
     db.session.delete(person)
     try:
         db.session.commit()
-        flash('Entry delete successfully.', 'success')
+        flash('Person delete successfully.', 'success')
     except:
         db.session.rollback()
-        flash('Error delete entry!', 'danger')
+        flash('Error delete person!', 'danger')
     return redirect(url_for('persons.index'))
