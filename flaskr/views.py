@@ -9,3 +9,5 @@ from flaskr  import views_persons
 app.register_blueprint(views_persons.bp)
 from flaskr  import views_workrecs
 app.register_blueprint(views_workrecs.bp)
+from flaskr  import api_idm
+app.register_blueprint(api_idm.bp)
