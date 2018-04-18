@@ -4,23 +4,35 @@ from flask         import Blueprint
 from flask         import request, redirect, url_for, render_template, flash
 from flask_wtf     import FlaskForm
 from wtforms       import StringField,DecimalField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Regexp
 from flaskr        import db
 from flaskr.models import Person,WorkRec
 
 bp = Blueprint('workrecs', __name__, url_prefix="/workrecs")
 
 class WorkRecCreateForm(FlaskForm):
-    work_in  = StringField('開始時刻')
+    work_in  = StringField('開始時刻',
+        validators=[
+            DataRequired(message='必須入力です'),
+            Regexp(message='HH:MMで入力してください',regex='^[0-9]{2}:[0-9]{2}$')
+        ])
     reason   = StringField('他')
 
 class WorkRecEditForm(FlaskForm):
     work_in  = StringField('開始時刻', 
         validators=[
+            DataRequired(message='必須入力です'),
+            Regexp(message='HH:MMで入力してください',regex='^[0-9]{2}:[0-9]{2}$')
+        ])
+    work_out = StringField('終了時刻',
+        validators=[
+            DataRequired(message='必須入力です'),
+            Regexp(message='HH:MMで入力してください',regex='^[0-9]{2}:[0-9]{2}$')
+        ])
+    value    = DecimalField('勤務時間', 
+        validators=[
             DataRequired(message='必須入力です')
         ])
-    work_out = StringField('終了時刻')
-    value    = DecimalField('勤務時間')
     reason   = StringField('他')
 
 @bp.route('/<id>')
@@ -81,12 +93,12 @@ def create(id,yymm,dd):
         except:
             db.session.rollback()
             flash('Error update workrec!', 'danger')
-    return render_template('workrecs/edit.pug',person=person,form=form)
+    return render_template('workrecs/edit.pug',person=person,form=form,yymm=yymm)
 
 @bp.route('/<id>/<yymm>/<dd>/edit', methods=('GET','POST'))
 def edit(id,yymm,dd):
     person   = Person.query.filter_by(id=id).first()
-    workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
+    workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm).first()
     form     = WorkRecEditForm(obj=workrec)
     if form.validate_on_submit():
         form.populate_obj(workrec)
@@ -98,7 +110,7 @@ def edit(id,yymm,dd):
         except:
             db.session.rollback()
             flash('Error update workrec!', 'danger')
-    return render_template('workrecs/edit.pug',person=person,form=form)
+    return render_template('workrecs/edit.pug',person=person,form=form,yymm=yymm)
 
 @bp.route('/<id>/<yymm>/<dd>/destroy')
 def destroy(id,yymm,dd):
