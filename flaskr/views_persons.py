@@ -12,6 +12,7 @@ class PersonForm(FlaskForm):
     name = StringField('名前', validators=[
             DataRequired(message='必須入力です')
         ])
+    idm = StringField('IDM')
 
 @bp.route('/')
 def index():
@@ -24,6 +25,8 @@ def create():
     if form.validate_on_submit():
         person = Person()
         form.populate_obj(person)
+        if person.idm == '':
+            person.idm = None
         db.session.add(person)
         try:
           db.session.commit()
@@ -40,6 +43,8 @@ def edit(id):
     form = PersonForm(obj=person)
     if form.validate_on_submit():
         form.populate_obj(person)
+        if person.idm == '':
+            person.idm = None
         db.session.add(person)
         try:
           db.session.commit()
