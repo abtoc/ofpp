@@ -6,6 +6,11 @@ block content
     table.table.table-striped.table-hover
         thead
             tr
+                th(colspan="3"): .text-center {{ yymm[:4] }}年{{ yymm[4:] }}月
+                th: .text-center 出退勤簿
+                th: .text-right 氏名：
+                th(colspan="2"): .text-left= person.name
+            tr
                 th: .text-right 日
                 th: .text-center 曜日
                 th: .text-center 開始時刻
