@@ -98,7 +98,7 @@ def create(id,yymm,dd):
 @bp.route('/<id>/<yymm>/<dd>/edit', methods=('GET','POST'))
 def edit(id,yymm,dd):
     person   = Person.query.filter_by(id=id).first()
-    workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm).first()
+    workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm,dd=dd).first()
     form     = WorkRecEditForm(obj=workrec)
     if form.validate_on_submit():
         form.populate_obj(workrec)
