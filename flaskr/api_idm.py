@@ -2,10 +2,31 @@ from flask         import Blueprint
 from flask         import request, jsonify
 from flaskr        import db
 from flaskr.models import Person, WorkRec
+from flaskr.workrule import *
 from datetime      import datetime
 import json
 
 bp = Blueprint('api_idm', __name__, url_prefix="/api/idm")
+
+def get_work_in(hhmm, staff):
+    if staff:
+        work_rules = work_rules_staff
+    else:
+        work_rules = work_rules_staff_no
+    for i in work_rules:
+        if (i['work_in']) and (i['start_time'] <= hhmm) and (hhmm < i['end_time']):
+            return i
+    return None
+
+def get_work_out(hhmm, staff):
+    if staff:
+        work_rules = work_rules_staff
+    else:
+        work_rules = work_rules_staff_no
+    for i in work_rules:
+        if (i['work_out']) and (i['start_time'] <= hhmm) and (hhmm < i['end_time']):
+            return i
+    return None
 
 @bp.route('/<idm>',methods=['GET'])
 def get_idm(idm):
@@ -32,8 +53,10 @@ def post_idm(idm):
     creation=False
     if workrec == None:
         creation = False
-        workrec = WorkRec(person_id=person.id, yymm=yymm,dd=dd)
-    
+        work_in = get_work_in(hhmm, person.staff)
+        workrec = WorkRec(person_id=person.id, yymm=yymm,dd=dd, work_in=work_in)
+    else:
+        workrec.work_out = get_work_out(hhmm, person.staff)
     db.session.add(workrec)
     try:
         db.session.commit()
