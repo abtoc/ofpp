@@ -5,6 +5,7 @@ from wtforms       import StringField, BooleanField
 from wtforms.validators import DataRequired
 from flaskr        import db
 from flaskr.models import Person
+from sqlalchemy.exc import IntegrityError
 
 bp = Blueprint('persons', __name__, url_prefix="/persons")
 
@@ -33,6 +34,9 @@ def create():
           db.session.commit()
           flash('Person created correctly.', 'success')
           return redirect(url_for('persons.index'))
+        except IntegrityError:
+          db.session.rollback()
+          flash('同一IDMが指定された可能性が有ります', 'danger')
         except:
           db.session.rollback()
           flash('Error generating person!', 'danger')
@@ -51,6 +55,9 @@ def edit(id):
           db.session.commit()
           flash('Person saved successfully.', 'success')
           return redirect(url_for('persons.index'))
+        except IntegrityError:
+          db.session.rollback()
+          flash('同一IDMが指定された可能性が有ります', 'danger')
         except:
           db.session.rollback()
           flash('Error update person!', 'danger')
