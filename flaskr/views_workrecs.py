@@ -13,25 +13,23 @@ bp = Blueprint('workrecs', __name__, url_prefix="/workrecs")
 class WorkRecCreateForm(FlaskForm):
     work_in  = StringField('開始時刻',
         validators=[
-            DataRequired(message='必須入力です'),
-            Regexp(message='HH:MMで入力してください',regex='^[0-9]{2}:[0-9]{2}$')
+            Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
         ])
     reason   = StringField('欠席理由・備考')
 
 class WorkRecEditForm(FlaskForm):
     work_in  = StringField('開始時刻', 
         validators=[
-            DataRequired(message='必須入力です'),
-            Regexp(message='HH:MMで入力してください',regex='^[0-9]{2}:[0-9]{2}$')
+            Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
         ])
     work_out = StringField('終了時刻',
         validators=[
-            DataRequired(message='必須入力です'),
-            Regexp(message='HH:MMで入力してください',regex='^[0-9]{2}:[0-9]{2}$')
+            Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
         ])
-    value    = DecimalField('勤務時間', 
-        validators=[
-            DataRequired(message='必須入力です')
+    value    = StringField('勤務時間',
+            validators=[
+            DataRequired(message='入力必須です'),
+            Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
         ])
     reason   = StringField('欠席理由・備考')
 
