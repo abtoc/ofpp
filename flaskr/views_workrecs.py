@@ -16,7 +16,7 @@ class WorkRecCreateForm(FlaskForm):
             DataRequired(message='必須入力です'),
             Regexp(message='HH:MMで入力してください',regex='^[0-9]{2}:[0-9]{2}$')
         ])
-    reason   = StringField('他')
+    reason   = StringField('欠席理由・備考')
 
 class WorkRecEditForm(FlaskForm):
     work_in  = StringField('開始時刻', 
