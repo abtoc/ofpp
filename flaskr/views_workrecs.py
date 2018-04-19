@@ -33,7 +33,7 @@ class WorkRecEditForm(FlaskForm):
         validators=[
             DataRequired(message='必須入力です')
         ])
-    reason   = StringField('他')
+    reason   = StringField('欠席理由・備考')
 
 @bp.route('/<id>')
 @bp.route('/<id>/<yymm>')
