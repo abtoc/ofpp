@@ -17,11 +17,10 @@ from dateutil.relativedelta       import relativedelta
 pdfmetrics.registerFont(TTFont('Gothic','/usr/share/fonts/truetype/fonts-japanese-gothic.ttf'))
 bp = Blueprint('pdf', __name__, url_prefix="/pdf")
 
-@bp.route('/<id>/<yymm>')
-def print_pdf(id,yymm):
+def make_items(id,yymm):
     person = Person.query.filter_by(id=id).first()
     if person == None:
-        abort(404)
+        return None
     yy     = int(yymm[:4])
     mm     = int(yymm[4:])
     ym     = '{yy}年{mm}月'.format(yy=yy,mm=mm)
@@ -67,11 +66,13 @@ def print_pdf(id,yymm):
         avg = 0.0
     item = ['','', str(sum), str(cnt), str(avg), '']
     items.append(item)
+    return items
 
-    colw   = (5.2*mm, 9.2*mm, 18.6*mm, 18.6*mm, 18.6*mm, 50.9*mm)
-    table  = Table(items, colWidths=colw, rowHeights=5.4*mm)
+def make_pdf(items):
+    colw   = (8.8*mm, 14.5*mm, 36.7*mm, 36.7*mm, 36.7*mm, 50.9*mm)
+    table  = Table(items, colWidths=colw, rowHeights=6.9*mm)
     table.setStyle([
-        ('FONT', (0,0), (-1,-1), 'Gothic', 11),
+        ('FONT', (0,0), (-1,-1), 'Gothic', 16),
         ('BOX',  (0,1), (-1,-1), 0.5, colors.black),
         ('INNERGRID', (0,1), (-1,-1), 0.5, colors.black),
         ('ALIGN', (0,1), (0,32), 'RIGHT'),
@@ -88,14 +89,20 @@ def print_pdf(id,yymm):
     psize  = portrait(A4)
     p = canvas.Canvas(output, pagesize=psize, bottomup=True)
     #p.setFont('Gothic')
-    table.wrapOn(p, 15.0*mm, 10.0*mm)
-    table.drawOn(p, 15.0*mm, 10.0*mm)
+    table.wrapOn(p, 15.0*mm, 30.0*mm)
+    table.drawOn(p, 15.0*mm, 30.0*mm)
     p.showPage()
     p.save()
 
-    pdf_out = output.getvalue()
+    result = output.getvalue()
     output.close()
+    return result
 
-    response = make_response(pdf_out)
+@bp.route('/<id>/<yymm>')
+def print_pdf(id,yymm):
+    items = make_items(id, yymm)
+    if items == None:
+        abort(404)
+    response = make_response(make_pdf(items))
     response.mimetype = 'application/pdf'
     return response
