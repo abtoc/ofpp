@@ -4,7 +4,7 @@ from flaskr.models import Person
 
 @app.route('/')
 def index():
-    persons = Person.query.filter_by(enabled=True).all()
+    persons = Person.query.filter_by(enabled=True).order_by(Person.name.desc()).all()
     return render_template('index.pug', persons=persons)
     #return redirect(url_for('persons.index'))
 
