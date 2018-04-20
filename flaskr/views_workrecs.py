@@ -72,13 +72,15 @@ def index(id,yymm=None):
             item['value']    = workrec.value
             item['reson']    = workrec.reason
             item['creation'] = False
-            if workrec.value != None:
+            if (workrec.value != None) and (workrec.value != 0.0):
                 foot['sum']      = foot['sum'] + workrec.value;
                 foot['count']    = foot['count'] + 1
         items.append(item)
         first = first + relativedelta(days=1)
     if foot['count'] > 0:
-        foot['avg'] = foot['sum'] / foot['count']
+        foot['avg'] = round(foot['sum'] / foot['count'], 1)
+    else:
+        foot['avg'] = 0.0
     return render_template('workrecs/index.pug', person=person,items=items,yymm=yymm,head=head,foot=foot)
 
 @bp.route('/<id>/<yymm>/<dd>/create', methods=('GET','POST'))

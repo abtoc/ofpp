@@ -49,7 +49,10 @@ def print_pdf(id,yymm):
             else:
                 item.append(workrec.work_in)
                 item.append(workrec.work_out)
-                item.append(str(workrec.value))
+                if workrec.value == None:
+                    item.append('0.0')
+                else:
+                    item.append(str(workrec.value))
                 item.append(workrec.reason)
                 if (workrec.value != None) and (workrec.value != 0.0):
                   sum = sum + workrec.value
@@ -59,7 +62,7 @@ def print_pdf(id,yymm):
     item = ['','','合計勤務時間','合計勤務日','平均勤務時間','']
     items.append(item)
     if cnt > 0:
-        avg = sum / cnt
+        avg = round(sum / cnt, 1)
     else:
         avg = 0.0
     item = ['','', str(sum), str(cnt), str(avg), '']
