@@ -44,7 +44,12 @@ def index(id,yymm=None):
         now  = datetime(int(yymm[:4]),int(yymm[4:]),1)
     first    = datetime(now.year, now.month, 1)
     last     = first + relativedelta(months=1)
+    prev     = first - relativedelta(months=1)
     items    = []
+    head     = dict(
+        prev=prev.strftime('%Y%m'), 
+        next=last.strftime('%Y%m')
+    )
     foot     = dict(
         sum=0.0,
         count=0,
@@ -74,7 +79,7 @@ def index(id,yymm=None):
         first = first + relativedelta(days=1)
     if foot['count'] > 0:
         foot['avg'] = foot['sum'] / foot['count']
-    return render_template('workrecs/index.pug', person=person,items=items,yymm=yymm,foot=foot)
+    return render_template('workrecs/index.pug', person=person,items=items,yymm=yymm,head=head,foot=foot)
 
 @bp.route('/<id>/<yymm>/<dd>/create', methods=('GET','POST'))
 def create(id,yymm,dd):

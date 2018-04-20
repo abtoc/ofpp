@@ -6,10 +6,14 @@ block content
     table.table.table-striped.table-hover
         thead
             tr
-                th(colspan="3"): .text-center {{ yymm[:4] }}年{{ yymm[4:] }}月
+                td(colspan="2"): .text-left
+                    a(href="{{ url_for('workrecs.index', id=person.id, yymm=head['prev']) }}") <<前月
+                th: .text-center {{ yymm[:4] }}年{{ yymm[4:] }}月
                 th: .text-center 出退勤簿
                 th: .text-right 氏名：
-                th(colspan="2"): .text-left= person.name
+                th: .text-left= person.name
+                td: .text-right
+                    a(href="{{ url_for('workrecs.index', id=person.id, yymm=head['next']) }}") 次月>>
             tr
                 th: .text-right 日
                 th: .text-center 曜日
