@@ -7,4 +7,4 @@ WTForms
 pypugjs
 python-dateutil
 PyMySQL
-
+reportlab
