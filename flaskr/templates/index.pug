@@ -8,23 +8,12 @@ block content
             tr
                 th #
                 th 名前
-                th
-                th IDm
-                th 作成日
-                th 更新日
                 td
         tbody
             for person in persons
                 tr
                     td= person.id
                     td= person.name
-                    if person.staff
-                      td 職員
-                    else
-                      td
-                    td= person.idm
-                    td= person.create_at
-                    td= person.update_at
                     td
                         .row
                             a.btn.btn-info.pull-right(href="{{ url_for('workrecs.index',id=person.id) }}") 勤務表

@@ -2,6 +2,8 @@ extends workrecs/layout.pug
 
 block title
     |{{ person.name }} - 勤怠編集
+block menu
+    li: a(href="{{ url_for('index')  }}") 一覧
 block content
     form(method="POST")
         +generate_fields(form)
