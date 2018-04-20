@@ -8,7 +8,7 @@ from reportlab.pdfbase            import pdfmetrics
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts    import TTFont
 from reportlab.platypus           import Table
-from io                           import StringIO
+from io                           import BytesIO
 from flaskr                       import db
 from flaskr.models                import Person,WorkRec
 from datetime                     import datetime
@@ -33,7 +33,7 @@ def print_pdf(id,yymm):
     items.append(item) 
     item   = ['日', '曜日', '勤務開始時刻', '勤務終了時刻','勤務時間', '欠席理由・備考']
     items.append(item)
-    for dd in range(1,31):
+    for dd in range(1,32):
         if mm != first.month:
             item = ['','','','','','']
         else:
@@ -51,7 +51,7 @@ def print_pdf(id,yymm):
                 item.append(workrec.work_out)
                 item.append(str(workrec.value))
                 item.append(workrec.reason)
-                if value != 0.0:
+                if (workrec.value != None) and (workrec.value != 0.0):
                   sum = sum + workrec.value
                   cnt = cnt + 1
         items.append(item)
@@ -65,12 +65,12 @@ def print_pdf(id,yymm):
     item = ['','', str(sum), str(cnt), str(avg), '']
     items.append(item)
 
-    colw   = (8.8*mm, 14.5*mm, 36.7*mm, 36.7*mm, 36.7*mm, 50.9*mm)
-    table  = Table(items, colWidths=colw, rowHeights=6.9*mm)
+    colw   = (5.2*mm, 9.2*mm, 18.6*mm, 18.6*mm, 18.6*mm, 50.9*mm)
+    table  = Table(items, colWidths=colw, rowHeights=5.4*mm)
     table.setStyle([
-        ('FONT', (0,0), (-1,-1), 'Gothic', 16),
-        ('BOX',  (0,0), (-1,-1), 0.5, colors.black),
-        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+        ('FONT', (0,0), (-1,-1), 'Gothic', 11),
+        ('BOX',  (0,1), (-1,-1), 0.5, colors.black),
+        ('INNERGRID', (0,1), (-1,-1), 0.5, colors.black),
         ('ALIGN', (0,1), (0,32), 'RIGHT'),
         ('ALIGN', (1,0), (3,32), 'CENTER'),
         ('ALIGN', (4,0), (4,32), 'RIGHT'),
@@ -81,15 +81,15 @@ def print_pdf(id,yymm):
         ('SPAN', (5,33),(5,-1)),
     ])
 
-    output = StringIO()
+    output = BytesIO()
     psize  = portrait(A4)
     p = canvas.Canvas(output, pagesize=psize, bottomup=True)
     #p.setFont('Gothic')
-    table.wrapOn(p, 15.0*mm, 30.0*mm)
-    table.drawOn(p, 15.0*mm, 30.0*mm)
+    table.wrapOn(p, 15.0*mm, 10.0*mm)
+    table.drawOn(p, 15.0*mm, 10.0*mm)
     p.showPage()
     p.save()
-    # ↑2018/04/20 StringIOでの出力エラー
+
     pdf_out = output.getvalue()
     output.close()
 
