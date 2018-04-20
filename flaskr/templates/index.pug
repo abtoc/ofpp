@@ -1,13 +1,12 @@
-extends persons/layout.pug
+extends layout.pug
 
 block title
-    |メンバー一覧
+    |出退勤簿
 block content
     table.table.table-hover
         thead
             tr
                 th #
-                th
                 th 名前
                 th
                 th IDm
@@ -18,10 +17,6 @@ block content
             for person in persons
                 tr
                     td= person.id
-                    if person.enabled
-                      td レ
-                    else
-                      td
                     td= person.name
                     if person.staff
                       td 職員
@@ -32,6 +27,4 @@ block content
                     td= person.update_at
                     td
                         .row
-                            a.btn.btn-danger.pull-right(href="{{ url_for('persons.destroy',id=person.id) }}") 削除
-                            a.btn.btn-primary.pull-right(href="{{ url_for('persons.edit',id=person.id) }}") 編集
                             a.btn.btn-info.pull-right(href="{{ url_for('workrecs.index',id=person.id) }}") 勤務表

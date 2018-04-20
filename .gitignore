@@ -1,4 +1,5 @@
 migrations/
+instance/
 *.pyc
 *.db
 *.sqlite3

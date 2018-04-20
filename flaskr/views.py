@@ -1,9 +1,12 @@
 from flask         import request, redirect, url_for, render_template, flash
 from flaskr        import app,db
+from flaskr.models import Person
 
 @app.route('/')
 def index():
-    return redirect(url_for('persons.index'))
+    persons = Person.query.filter_by(enabled=True).all()
+    return render_template('index.pug', persons=persons)
+    #return redirect(url_for('persons.index'))
 
 from flaskr  import views_persons
 app.register_blueprint(views_persons.bp)
