@@ -4,3 +4,5 @@ instance/
 *.db
 *.sqlite3
 *.pdf
+nohup.out
+
