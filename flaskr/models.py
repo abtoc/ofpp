@@ -14,6 +14,8 @@ class Person(db.Model):
     idm       = db.Column(db.String(16), unique=True)
     enabled   = db.Column(db.Boolean, nullable=False)
     staff     = db.Column(db.Boolean, nullable=False)
+    number    = db.Column(db.String(10), nullable=False)
+    amount    = db.Column(db.String(64), nullable=False)
     create_at = db.Column(db.DateTime, default =_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
     def __repr__(self):

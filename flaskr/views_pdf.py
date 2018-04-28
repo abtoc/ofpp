@@ -17,92 +17,194 @@ from dateutil.relativedelta       import relativedelta
 pdfmetrics.registerFont(TTFont('Gothic','/usr/share/fonts/truetype/fonts-japanese-gothic.ttf'))
 bp = Blueprint('pdf', __name__, url_prefix="/pdf")
 
-def make_items(id,yymm):
+def make_head(id,yymm):
     person = Person.query.filter_by(id=id).first()
     if person == None:
         return None
+
+    head = {}
+    yy = int(yymm[:4])
+    gg = yy - 1988
+    mm = int(yymm[4:])
+    head['gm']     = '平成{gg}年{mm}月分'.format(gg=gg,mm=mm)
+    head['name']   = person.name
+    head['number'] = person.number
+    head['amount'] = person.amount
+    return head
+
+def make_items(id,yymm):
     yy     = int(yymm[:4])
     mm     = int(yymm[4:])
-    ym     = '{yy}年{mm}月'.format(yy=yy,mm=mm)
     first  = datetime(yy, mm, 1) 
-    sum    = 0.0
-    cnt    = 0
     items  = []
-    item   = [ym, '', '', '出勤簿','氏名：', person.name]
-    items.append(item) 
-    item   = ['日', '曜日', '勤務開始時刻', '勤務終了時刻','勤務時間', '欠席理由・備考']
-    items.append(item)
+    foot   = dict(
+        sum = 0.0,
+        cnt = 0
+    )
     for dd in range(1,32):
         if mm != first.month:
-            item = ['','','','','','']
+            items.append(None)
+            continue
+        item = {}
+        item['dd'] = first.day
+        item['ww'] = first.strftime('%a')
+        workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
+        if (workrec == None) or (workrec.value is None) or (workrec.value == 0.0):
+            item['stat'] = '－'
         else:
-            item = []
-            item.append(str(dd))
-            item.append(first.strftime('%a'))
-            workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
-            if workrec == None:
-                item.append('')
-                item.append('')
-                item.append('0.0')
-                item.append('')
-            else:
-                item.append(workrec.work_in)
-                item.append(workrec.work_out)
-                if workrec.value == None:
-                    item.append('0.0')
-                else:
-                    item.append(str(workrec.value))
-                item.append(workrec.reason)
-                if (workrec.value != None) and (workrec.value != 0.0):
-                  sum = sum + workrec.value
-                  cnt = cnt + 1
-        items.append(item)
+            item['stat'] = '○'
+            item['in']  = workrec.work_in
+            item['out'] = workrec.work_out
+            item['val'] = workrec.value
+            foot['cnt'] = foot['cnt'] + 1
+            foot['sum'] = foot['sum'] + workrec.value
+        if first.weekday() != 6:
+            items.append(item)
         first = first + relativedelta(days=1)
-    item = ['','','合計勤務時間','合計勤務日','平均勤務時間','']
-    items.append(item)
-    if cnt > 0:
-        avg = round(sum / cnt, 1)
-    else:
-        avg = 0.0
-    item = ['','', str(sum), str(cnt), str(avg), '']
-    items.append(item)
-    return items
+    while len(items) < 28:
+        items.append(None)
+    return items,foot
 
-def make_pdf(items):
-    colw   = (8.8*mm, 14.5*mm, 36.7*mm, 36.7*mm, 36.7*mm, 50.9*mm)
-    table  = Table(items, colWidths=colw, rowHeights=6.9*mm)
-    table.setStyle([
-        ('FONT', (0,0), (-1,-1), 'Gothic', 16),
-        ('BOX',  (0,1), (-1,-1), 0.5, colors.black),
-        ('INNERGRID', (0,1), (-1,-1), 0.5, colors.black),
-        ('ALIGN', (0,1), (0,32), 'RIGHT'),
-        ('ALIGN', (1,0), (3,32), 'CENTER'),
-        ('ALIGN', (4,0), (4,32), 'RIGHT'),
-        ('ALIGN', (2,33),(4,-1), 'RIGHT'),
-        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('SPAN', (0,0),(2,0)),
-        ('SPAN', (0,33),(1,-1)),
-        ('SPAN', (5,33),(5,-1)),
-    ])
-
+def make_pdf(head, items, foot):
     output = BytesIO()
     psize  = portrait(A4)
+    xmargin = 15.0*mm
     p = canvas.Canvas(output, pagesize=psize, bottomup=True)
-    #p.setFont('Gothic')
-    table.wrapOn(p, 15.0*mm, 30.0*mm)
-    table.drawOn(p, 15.0*mm, 30.0*mm)
+    # Title
+    p.setFont('Gothic', 16)
+    p.drawString(75*mm, 275*mm, '就労継続支援提供実績記録票')
+    p.setFont('Gothic', 11)
+    p.drawString(17*mm, 275*mm, head['gm'])
+    # Header
+    colw = (25.0*mm, 29.5*mm, 32.0*mm, 32.0*mm, 22.0*mm, 43.5*mm)
+    head =[
+        ['受給者証番号',head['number'],'支給決定障害者氏名',head['name'],'事業所番号','2317100929'],
+        ['契約支給量',head['amount'],'','','事業者及び\nその事業所','オフィスファーム']
+    ]
+    table = Table(head, colWidths=colw, rowHeights=10.0*mm)
+    table.setStyle([
+        ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 8),
+        ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
+        ('BOX',    ( 0, 0), (-1,-1), 1.8, colors.black),
+        ('VALIGN', ( 0, 0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',  ( 0, 0), (-1,-1), 'CENTER'),
+        ('ALIGN',  ( 1, 1), ( 1, 1), 'LEFT'),
+        ('SPAN',   ( 1, 1), ( 3, 1))
+    ])
+    table.wrapOn(p, xmargin, 252.0*mm)
+    table.drawOn(p, xmargin, 252.0*mm)
+    # Detail
+    colw = (8.6*mm,11.0*mm, 17.2*mm, 17.2*mm, 17.2*mm, 17.2*mm, 8.0*mm, 8.0*mm, 14.0*mm, 8.6*mm, 8.6*mm, 13.8*mm, 34.6*mm )
+    data = [
+        ['日\n付','曜\n日','サービス提供実績','','','','','','','','','利用者\n確認印','備考'],
+        ['','','サービス提供\nの状況','開始時間','終了時間','利用時間','送迎加算','','`訪問支援特別加算','食事提供\n加算','施設外\n就労','',''],
+        ['','','','','','','往','復','時間数'],
+    ]
+    for item in items:
+        d = []
+        if item != None:
+            d.append(item['dd'])
+            d.append(item['ww'])
+            d.append(item['stat'])
+            if 'in' in item:
+                d.append(item['in'])
+            else:
+                d.append('')
+            if 'out' in item:
+                d.append(item['out'])
+            else:
+                d.append('')
+            if 'val' in item:
+                d.append(item['val'])
+            else:
+                d.append('')
+        data.append(d)
+    table = Table(data, colWidths=colw, rowHeights=7.0*mm)
+    table.setStyle([
+        ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 9),
+        ('FONT',   ( 2, 1), ( 2, 1), 'Gothic', 8),
+        ('FONT',   ( 8, 1), ( 8, 1), 'Gothic', 5),
+        ('FONT',   ( 9, 1), (10, 1), 'Gothic', 6),
+        ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
+        ('BOX',    ( 0, 0), (-1,-1), 1.8, colors.black),
+        ('BOX',    ( 0, 0), (-1, 2), 1.8, colors.black),
+        ('BOX',    ( 0, 0), ( 1,-1), 1.8, colors.black),
+        ('BOX',    (11, 0), (11,-1), 1.8, colors.black),
+        ('VALIGN', ( 0, 0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',  ( 0, 0), (-1, 2), 'CENTER'),
+        ('ALIGN',  ( 0, 2), ( 5,-1), 'CENTER'),
+        ('SPAN',   ( 0, 0), ( 0, 2)),
+        ('SPAN',   ( 1, 0), ( 1, 2)),
+        ('SPAN',   ( 2, 0), (10, 0)),
+        ('SPAN',   ( 2, 1), ( 2, 2)),
+        ('SPAN',   ( 3, 1), ( 3, 2)),
+        ('SPAN',   ( 4, 1), ( 4, 2)),
+        ('SPAN',   ( 5, 1), ( 5, 2)),
+        ('SPAN',   ( 6, 1), ( 7, 1)),
+        ('SPAN',   ( 9, 1), ( 9, 2)),
+        ('SPAN',   (10, 1), (10, 2)),
+        ('SPAN',   (11, 0), (11, 2)),
+        ('SPAN',   (12, 0), (12, 2))
+    ])
+    table.wrapOn(p, xmargin, 32.0*mm)
+    table.drawOn(p, xmargin, 32.0*mm)
+    # Footer
+    colw=(71.3*mm,17.1*mm,16.0*mm,14.0*mm,8.6*mm,13.6*mm,9.0*mm,34.5*mm)
+    foot=[
+        ['合計','{}時間'.format(foot['sum']),'回','回','回','施設外\n就労','当月','日      '],
+        ['','','','','','','累計','日      ']
+    ]
+    table = Table(foot, colWidths=colw, rowHeights=4.0*mm)
+    table.setStyle([
+        ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 8),
+        ('FONT',   ( 1, 0), ( 4,-1), 'Gothic', 6),
+        ('FONT',   ( 6, 0), ( 6,-1), 'Gothic', 6),
+        ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
+        ('BOX',    ( 0, 0), (-1,-1), 1.8, colors.black),
+        ('VALIGN', ( 0, 0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',  ( 0, 0), ( 0,-1), 'CENTER'),
+        ('ALIGN',  ( 1, 0), ( 4,-1), 'RIGHT'),
+        ('ALIGN',  ( 5, 0), ( 6,-1), 'CENTER'),
+        ('ALIGN',  ( 7, 0), ( 7,-1), 'RIGHT'),
+        ('SPAN',   ( 0, 0), ( 0, 1)),
+        ('SPAN',   ( 1, 0), ( 1, 1)),
+        ('SPAN',   ( 2, 0), ( 2, 1)),
+        ('SPAN',   ( 3, 0), ( 3, 1)),
+        ('SPAN',   ( 4, 0), ( 4, 1)),
+        ('SPAN',   ( 5, 0), ( 5, 1))
+    ])
+    table.wrapOn(p, xmargin, 23.2*mm)
+    table.drawOn(p, xmargin, 23.2*mm)
+    colw=(28.0*mm,21.5*mm,30.5*mm,21.5*mm,30.5*mm,21.5*mm,30.5*mm)
+    foot=[
+        ['初期加算','利用開始日','','30日目','','当月算定日数','']
+    ]
+    table = Table(foot, colWidths=colw, rowHeights=6.5*mm)
+    table.setStyle([
+        ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 9),
+        ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
+        ('BOX',    ( 0, 0), (-1,-1), 1.8, colors.black),
+        ('VALIGN', ( 0, 0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',  ( 0, 0), (-1,-1), 'CENTER')
+    ])
+    table.wrapOn(p, xmargin, 15.0*mm)
+    table.drawOn(p, xmargin, 15.0*mm)
+
+    # Page Print
     p.showPage()
     p.save()
-
     result = output.getvalue()
     output.close()
     return result
 
 @bp.route('/<id>/<yymm>')
 def print_pdf(id,yymm):
-    items = make_items(id, yymm)
+    head = make_head(id, yymm)
+    if head == None:
+        abort(404)
+    items,foot = make_items(id, yymm)
     if items == None:
         abort(404)
-    response = make_response(make_pdf(items))
+    response = make_response(make_pdf(head, items,foot))
     response.mimetype = 'application/pdf'
     return response

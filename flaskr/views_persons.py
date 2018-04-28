@@ -2,7 +2,7 @@ from flask         import Blueprint
 from flask         import request, redirect, url_for, render_template, flash
 from flask_wtf     import FlaskForm
 from wtforms       import StringField, BooleanField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Regexp
 from flaskr        import db
 from flaskr.models import Person
 from sqlalchemy.exc import IntegrityError
@@ -16,6 +16,14 @@ class PersonForm(FlaskForm):
     idm    = StringField('IDM')
     enabled = BooleanField('有効化', default='checked')
     staff   = BooleanField('職員')
+    number  = StringField('受給者番号',
+        validators=[
+            Regexp(message='数字10桁で入力してください',regex='^[0-9]{10}$')
+        ])
+    amount  = StringField('契約支給量',
+        validators=[
+            DataRequired(message='入力必須です')
+        ])
 
 @bp.route('/')
 def index():
