@@ -28,6 +28,7 @@ def make_head(id,yymm):
     mm = int(yymm[4:])
     head['gm']     = '平成{gg}年{mm}月分'.format(gg=gg,mm=mm)
     head['name']   = person.name
+    head['idm']    = person.idm
     head['number'] = person.number
     head['amount'] = person.amount
     return head
@@ -77,11 +78,12 @@ def make_pdf(head, items, foot):
     p.drawString(17*mm, 275*mm, head['gm'])
     # Header
     colw = (25.0*mm, 29.5*mm, 32.0*mm, 32.0*mm, 22.0*mm, 43.5*mm)
-    head =[
+    idm = head['idm']
+    data =[
         ['受給者証番号',head['number'],'支給決定障害者氏名',head['name'],'事業所番号','2317100929'],
         ['契約支給量',head['amount'],'','','事業者及び\nその事業所','オフィスファーム']
     ]
-    table = Table(head, colWidths=colw, rowHeights=10.0*mm)
+    table = Table(data, colWidths=colw, rowHeights=10.0*mm)
     table.setStyle([
         ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 8),
         ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
@@ -150,11 +152,11 @@ def make_pdf(head, items, foot):
     table.drawOn(p, xmargin, 32.0*mm)
     # Footer
     colw=(71.3*mm,17.1*mm,16.0*mm,14.0*mm,8.6*mm,13.6*mm,9.0*mm,34.5*mm)
-    foot=[
+    data=[
         ['合計','{}時間'.format(foot['sum']),'回','回','回','施設外\n就労','当月','日      '],
         ['','','','','','','累計','日      ']
     ]
-    table = Table(foot, colWidths=colw, rowHeights=4.0*mm)
+    table = Table(data, colWidths=colw, rowHeights=4.0*mm)
     table.setStyle([
         ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 8),
         ('FONT',   ( 1, 0), ( 4,-1), 'Gothic', 6),
@@ -176,10 +178,10 @@ def make_pdf(head, items, foot):
     table.wrapOn(p, xmargin, 23.2*mm)
     table.drawOn(p, xmargin, 23.2*mm)
     colw=(28.0*mm,21.5*mm,30.5*mm,21.5*mm,30.5*mm,21.5*mm,30.5*mm)
-    foot=[
+    data=[
         ['初期加算','利用開始日','','30日目','','当月算定日数','']
     ]
-    table = Table(foot, colWidths=colw, rowHeights=6.5*mm)
+    table = Table(data, colWidths=colw, rowHeights=6.5*mm)
     table.setStyle([
         ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 9),
         ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
@@ -189,7 +191,9 @@ def make_pdf(head, items, foot):
     ])
     table.wrapOn(p, xmargin, 15.0*mm)
     table.drawOn(p, xmargin, 15.0*mm)
-
+    # IDm
+    p.setFont('Gothic', 11)
+    p.drawString(17*mm, 10*mm, '記録ICカード：{idm}'.format(idm=idm))
     # Page Print
     p.showPage()
     p.save()
