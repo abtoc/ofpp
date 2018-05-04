@@ -3,6 +3,7 @@ Flask-SQLAlchemy
 Flask-WTF
 Flask-Script
 Flask-Migrate
+Flask-Login
 WTForms
 pypugjs
 python-dateutil

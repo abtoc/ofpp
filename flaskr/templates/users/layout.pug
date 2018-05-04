@@ -1,0 +1,6 @@
+extends layout.pug
+
+block menu
+    li: a(href="{{ url_for('users.create') }}") 新規作成
+    li: a(href="{{ url_for('users.passwd') }}") パスワード変更
+    li: a(href="{{ url_for('users.index')  }}") ユーザ一覧

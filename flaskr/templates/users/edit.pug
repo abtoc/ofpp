@@ -1,0 +1,8 @@
+extends users/layout.pug
+
+block title
+    |ユーザ編集
+block content
+    form(method="POST")
+      +generate_fields(form)
+      input.btn.btn-success(type="submit",value="保存")
