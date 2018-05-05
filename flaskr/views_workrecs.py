@@ -2,6 +2,7 @@ from datetime      import datetime
 from dateutil.relativedelta import relativedelta
 from flask         import Blueprint
 from flask         import request, redirect, url_for, render_template, flash
+from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField,DecimalField
 from wtforms.validators import DataRequired, Regexp
@@ -84,6 +85,7 @@ def index(id,yymm=None):
     return render_template('workrecs/index.pug', person=person,items=items,yymm=yymm,head=head,foot=foot)
 
 @bp.route('/<id>/<yymm>/<dd>/create', methods=('GET','POST'))
+@login_required
 def create(id,yymm,dd):
     person   = Person.query.filter_by(id=id).first()
     form     = WorkRecCreateForm()
@@ -101,6 +103,7 @@ def create(id,yymm,dd):
     return render_template('workrecs/edit.pug',person=person,form=form,yymm=yymm)
 
 @bp.route('/<id>/<yymm>/<dd>/edit', methods=('GET','POST'))
+@login_required
 def edit(id,yymm,dd):
     person   = Person.query.filter_by(id=id).first()
     workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm,dd=dd).first()
@@ -118,6 +121,7 @@ def edit(id,yymm,dd):
     return render_template('workrecs/edit.pug',person=person,form=form,yymm=yymm)
 
 @bp.route('/<id>/<yymm>/<dd>/destroy')
+@login_required
 def destroy(id,yymm,dd):
     workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
     if workrec != None:

@@ -1,5 +1,6 @@
 from flask         import Blueprint
 from flask         import request, redirect, url_for, render_template, flash
+from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField, BooleanField
 from wtforms.validators import DataRequired, Regexp
@@ -26,11 +27,13 @@ class PersonForm(FlaskForm):
         ])
 
 @bp.route('/')
+@login_required
 def index():
     persons = Person.query.all()
     return render_template('persons/index.pug', persons=persons)
 
 @bp.route('/create', methods=('GET','POST'))
+@login_required
 def create():
     form = PersonForm()
     if form.validate_on_submit():
@@ -52,6 +55,7 @@ def create():
     return render_template('persons/create.pug', form=form)
 
 @bp.route('/<id>/edit', methods=('GET','POST'))
+@login_required
 def edit(id):
     person = Person.query.filter_by(id=id).first()
     form = PersonForm(obj=person)
@@ -73,6 +77,7 @@ def edit(id):
     return render_template('persons/edit.pug', form=form)
 
 @bp.route('/<id>/destroy')
+@login_required
 def destroy(id):
     person = Person.query.filter_by(id=id).first()
     db.session.delete(person)

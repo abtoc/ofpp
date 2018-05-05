@@ -1,4 +1,5 @@
-SQLALCHEMY_DATABASE_URI = 'mysql://tr01:Passw0rd#@localhost/tr01?charset=utf8'
+import os
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL','')
 #SQLALCHEMY_DATABASE_URI = 'sqlite:///./flaskr.db'
 # To instance/config.py
 SQLALCHEMY_ECHO = False

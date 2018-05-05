@@ -16,3 +16,7 @@ from flaskr  import api_idm
 app.register_blueprint(api_idm.bp)
 from flaskr  import views_pdf
 app.register_blueprint(views_pdf.bp)
+from flaskr  import views_auth
+app.register_blueprint(views_auth.bp)
+from flaskr  import views_users
+app.register_blueprint(views_users.bp)
