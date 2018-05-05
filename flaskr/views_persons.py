@@ -1,5 +1,5 @@
 from flask         import Blueprint
-from flask         import request, redirect, url_for, render_template, flash
+from flask         import request, redirect, url_for, render_template, flash, abort
 from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField, BooleanField
@@ -58,6 +58,8 @@ def create():
 @login_required
 def edit(id):
     person = Person.query.filter_by(id=id).first()
+    if person is None:
+      abort(404)
     form = PersonForm(obj=person)
     if form.validate_on_submit():
         form.populate_obj(person)
@@ -80,6 +82,8 @@ def edit(id):
 @login_required
 def destroy(id):
     person = Person.query.filter_by(id=id).first()
+    if person is None:
+      abort(404)
     db.session.delete(person)
     try:
         db.session.commit()

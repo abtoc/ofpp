@@ -1,7 +1,7 @@
 from datetime      import datetime
 from dateutil.relativedelta import relativedelta
 from flask         import Blueprint
-from flask         import request, redirect, url_for, render_template, flash
+from flask         import request, redirect, url_for, render_template, flash, abort
 from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField,DecimalField
@@ -38,6 +38,8 @@ class WorkRecEditForm(FlaskForm):
 @bp.route('/<id>/<yymm>')
 def index(id,yymm=None):
     person   = Person.query.filter_by(id=id).first()
+    if person is None:
+      abort(404)
     if yymm == None:
         now  = datetime.now()
         yymm = now.strftime('%Y%m')
@@ -88,6 +90,8 @@ def index(id,yymm=None):
 @login_required
 def create(id,yymm,dd):
     person   = Person.query.filter_by(id=id).first()
+    if person is None:
+      abort(404)
     form     = WorkRecCreateForm()
     if form.validate_on_submit():
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
@@ -106,6 +110,8 @@ def create(id,yymm,dd):
 @login_required
 def edit(id,yymm,dd):
     person   = Person.query.filter_by(id=id).first()
+    if person is None:
+      abort(404)
     workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm,dd=dd).first()
     form     = WorkRecEditForm(obj=workrec)
     if form.validate_on_submit():
