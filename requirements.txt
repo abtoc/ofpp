@@ -8,4 +8,5 @@ WTForms
 pypugjs
 python-dateutil
 PyMySQL
+psycopg2
 reportlab
