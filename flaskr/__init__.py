@@ -1,8 +1,10 @@
 from flask            import Flask
 from flask_login      import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-import locale
-locale.setlocale(locale.LC_TIME, 'ja_JP.UTF-8')
+#import locale
+#locale.setlocale(locale.LC_TIME, 'ja_JP.UTF-8')
+
+weeka=('月', '火', '水', '木', '金', '土', '日')
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('flaskr.config')

@@ -9,7 +9,7 @@ from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts    import TTFont
 from reportlab.platypus           import Table
 from io                           import BytesIO
-from flaskr                       import db
+from flaskr                       import db,weeka
 from flaskr.models                import Person,WorkRec
 from datetime                     import datetime
 from dateutil.relativedelta       import relativedelta
@@ -48,7 +48,7 @@ def make_items(id,yymm):
             continue
         item = {}
         item['dd'] = first.day
-        item['ww'] = first.strftime('%a')
+        item['ww'] = weeka[first.weekday()]
         workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
         if (workrec == None) or (workrec.value is None) or (workrec.value == 0.0):
             item['stat'] = '－'
