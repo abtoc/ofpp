@@ -14,7 +14,7 @@ from flaskr.models                import Person,WorkRec
 from datetime                     import datetime
 from dateutil.relativedelta       import relativedelta
 
-pdfmetrics.registerFont(TTFont('Gothic','/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf'))
+pdfmetrics.registerFont(TTFont('Gothic','flaskr/fonts/fonts-japanese-gothic.ttf'))
 bp = Blueprint('pdf', __name__, url_prefix="/pdf")
 
 def make_head(id,yymm):
