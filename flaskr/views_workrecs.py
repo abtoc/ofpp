@@ -6,7 +6,7 @@ from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField,DecimalField
 from wtforms.validators import DataRequired, Regexp
-from flaskr        import db
+from flaskr        import db, weeka
 from flaskr.models import Person,WorkRec
 
 bp = Blueprint('workrecs', __name__, url_prefix="/workrecs")
@@ -61,7 +61,7 @@ def index(id,yymm=None):
     while first < last:
         item = dict(
             dd=first.day,
-            week=first.strftime('%a'),
+            week=weeka[first.weekday()],
             work_in=None,
             work_out=None,
             value=None,
