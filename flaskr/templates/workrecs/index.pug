@@ -3,7 +3,7 @@ extends workrecs/layout.pug
 block title
     |{{ person.name }} - 勤務表
 block menu
-    li: a(href="{{ url_for('pdf.print_pdf', id=person.id, yymm=yymm) }}") 印刷
+    li: a(href="{{ url_for('pdf.print_pdf', id=person.id, yymm=yymm) }}" target="_blank") 印刷
     li: a(href="{{ url_for('index')  }}") 一覧
 block content
     table.table.table-striped.table-hover
