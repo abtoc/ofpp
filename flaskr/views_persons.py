@@ -4,8 +4,9 @@ from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField, BooleanField
 from wtforms.validators import DataRequired, Regexp
+from sqlalchemy    import func
 from flaskr        import db
-from flaskr.models import Person
+from flaskr.models import Person,WorkRec
 from sqlalchemy.exc import IntegrityError
 
 bp = Blueprint('persons', __name__, url_prefix="/persons")
@@ -84,6 +85,13 @@ def destroy(id):
     person = Person.query.filter_by(id=id).first()
     if person is None:
       abort(404)
+    q=db.session.\
+        query(func.count(WorkRec.yymm)).\
+        filter_by(person_id=id).\
+        group_by(WorkRec.person_id).first()
+    if q is not None:
+        flash('このユーザは勤怠データが存在しています', 'danger')
+        return redirect(url_for('persons.index'))
     db.session.delete(person)
     try:
         db.session.commit()
