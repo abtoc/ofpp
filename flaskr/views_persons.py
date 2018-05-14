@@ -30,7 +30,7 @@ class PersonForm(FlaskForm):
 @bp.route('/')
 @login_required
 def index():
-    persons = Person.query.all()
+    persons = Person.query.order_by(Person.name.desc()).all()
     return render_template('persons/index.pug', persons=persons)
 
 @bp.route('/create', methods=('GET','POST'))
