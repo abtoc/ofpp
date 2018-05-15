@@ -1,6 +1,7 @@
-from flask            import Flask
-from flask_login      import LoginManager
-from flask_sqlalchemy import SQLAlchemy
+from flask             import Flask
+from flask_login       import LoginManager
+from flask_sqlalchemy  import SQLAlchemy
+from flask_apscheduler import APScheduler
 #import locale
 #locale.setlocale(locale.LC_TIME, 'ja_JP.UTF-8')
 
@@ -17,5 +18,11 @@ lm.login_view = 'auth.login'
 
 db = SQLAlchemy(app)
 
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
 import flaskr.views
 import flaskr.models
+import flaskr.jobs
+

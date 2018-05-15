@@ -11,3 +11,4 @@ PyMySQL
 psycopg2
 reportlab
 uwsgi
+Flask-APScheduler
