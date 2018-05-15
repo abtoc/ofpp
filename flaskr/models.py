@@ -31,7 +31,10 @@ class Person(db.Model):
 
 class WorkRec(db.Model):
     __tablename__ = 'workrecs'
-    __table_args__ = {'mysql_engine': 'InnoDB'}
+    __table_args__ = (
+        (db.UniqueConstraint('yymm', 'dd', 'person_id', name='idx_yymm_dd_id')),
+        {'mysql_engine': 'InnoDB'}
+    )
     person_id = db.Column(db.String(36), db.ForeignKey('persons.id'), primary_key=True)
     yymm      = db.Column(db.String(8),  primary_key=True)
     dd        = db.Column(db.Integer,    primary_key=True)
