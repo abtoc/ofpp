@@ -34,12 +34,26 @@ class WorkRecEditForm(FlaskForm):
         ])
     reason   = StringField('欠席理由・備考')
 
+def _check_yymmdd(yymm, dd=1):
+    if len(yymm) != 6:
+        return False
+    try:
+        yy = int(yymm[:4])
+        mm = int(yymm[4:])
+        dd = int(dd)
+        datetime(yy,mm,dd)
+        return True
+    except ValueError:
+        return False
+
 @bp.route('/<id>')
 @bp.route('/<id>/<yymm>')
 def index(id,yymm=None):
+    if (yymm is not None) and (not _check_yymmdd(yymm)):
+        abort(400)
     person   = Person.query.filter_by(id=id).first()
     if person is None:
-      abort(404)
+        abort(404)
     if yymm == None:
         now  = datetime.now()
         yymm = now.strftime('%Y%m')
@@ -89,9 +103,11 @@ def index(id,yymm=None):
 @bp.route('/<id>/<yymm>/<dd>/create', methods=('GET','POST'))
 @login_required
 def create(id,yymm,dd):
+    if (not _check_yymmdd(yymm,dd=dd)):
+        abort(400)
     person   = Person.query.filter_by(id=id).first()
     if person is None:
-      abort(404)
+        abort(404)
     form     = WorkRecCreateForm()
     if form.validate_on_submit():
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
@@ -111,8 +127,10 @@ def create(id,yymm,dd):
 def edit(id,yymm,dd):
     person   = Person.query.filter_by(id=id).first()
     if person is None:
-      abort(404)
+        abort(404)
     workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm,dd=dd).first()
+    if workrec is None:
+        abort(404)
     form     = WorkRecEditForm(obj=workrec)
     if form.validate_on_submit():
         form.populate_obj(workrec)
