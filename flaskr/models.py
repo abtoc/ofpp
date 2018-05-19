@@ -76,3 +76,25 @@ class User(db.Model, UserMixin):
         return '<User: id={id},userid={userid},name={name}>'.format(
             id=self.id, userid=self.userid, name=self.name
         )
+
+class Option(db.Model):
+    __tablename__ = 'options'
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+    id        = db.Column(db.String(36), primary_key=True, default=_gen_uuid)
+    name      = db.Column(db.String(64), nullable=False, unique=True)
+    value     = db.Column(db.String(128),nullable=True)
+    create_at = db.Column(db.DateTime,    default =_get_now)
+    update_at = db.Column(db.DateTime,    onupdate=_get_now)
+    @classmethod
+    def get(cls,name):
+        opt = cls.query.filter_by(name=name).first()
+        if opt is None:
+            return None
+        return opt.value
+    @classmethod
+    def set(cls,name,value):
+        opt = cls.query.filter_by(name=name).first()
+        if opt is None:
+            opt = Option(name=name)
+        opt.value = value
+        db.session.save(opt)
