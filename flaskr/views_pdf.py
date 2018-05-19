@@ -10,7 +10,7 @@ from reportlab.pdfbase.ttfonts    import TTFont
 from reportlab.platypus           import Table
 from io                           import BytesIO
 from flaskr                       import db,weeka
-from flaskr.models                import Person,WorkRec
+from flaskr.models                import Person,WorkRec,Option
 from datetime                     import datetime
 from dateutil.relativedelta       import relativedelta
 
@@ -79,9 +79,11 @@ def make_pdf(head, items, foot):
     # Header
     colw = (25.0*mm, 29.5*mm, 32.0*mm, 32.0*mm, 22.0*mm, 43.5*mm)
     idm = head['idm']
+    office_number = Option.get('office_number','')
+    office_name   = Option.get('office_name',  '')
     data =[
-        ['受給者証番号',head['number'],'支給決定障害者氏名',head['name'],'事業所番号','2317100929'],
-        ['契約支給量',head['amount'],'','','事業者及び\nその事業所','オフィスファーム']
+        ['受給者証番号',head['number'],'支給決定障害者氏名',head['name'],'事業所番号',office_number],
+        ['契約支給量',head['amount'],'','','事業者及び\nその事業所',office_name]
     ]
     table = Table(data, colWidths=colw, rowHeights=10.0*mm)
     table.setStyle([

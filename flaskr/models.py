@@ -86,10 +86,10 @@ class Option(db.Model):
     create_at = db.Column(db.DateTime,    default =_get_now)
     update_at = db.Column(db.DateTime,    onupdate=_get_now)
     @classmethod
-    def get(cls,name):
+    def get(cls,name,value):
         opt = cls.query.filter_by(name=name).first()
         if opt is None:
-            return None
+            return value
         return opt.value
     @classmethod
     def set(cls,name,value):
@@ -97,4 +97,4 @@ class Option(db.Model):
         if opt is None:
             opt = Option(name=name)
         opt.value = value
-        db.session.save(opt)
+        db.session.add(opt)

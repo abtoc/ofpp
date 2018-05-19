@@ -26,7 +26,8 @@ html(lang="ja")
                     //-    button.btn.btn-default(type="submit") Search
                     ul.nav.navbar-nav.navbar-left
                       li: a(href="{{ url_for('persons.index')  }}") メンバー管理
-                      li: a(href="{{ url_for('users.index')  }}") ユーザ管理
+                      li: a(href="{{ url_for('users.index')    }}") ユーザ管理
+                      li: a(href="{{ url_for('options.index')  }}") 設定
                     ul.nav.navbar-nav.navbar-right
                         block menu
                         if current_user.is_authenticated

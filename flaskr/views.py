@@ -20,3 +20,5 @@ from flaskr  import views_auth
 app.register_blueprint(views_auth.bp)
 from flaskr  import views_users
 app.register_blueprint(views_users.bp)
+from flaskr  import views_options
+app.register_blueprint(views_options.bp)
