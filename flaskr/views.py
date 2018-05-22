@@ -8,6 +8,13 @@ def index():
     return render_template('index.pug', persons=persons)
     #return redirect(url_for('persons.index'))
 
+@app.after_request
+def apply_caching(response):
+    response.headers["X-Frame-Options"]        = "DENY"
+    response.headers["X-XSS-Protection"]       = "1; mode=block"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
 from flaskr  import views_persons
 app.register_blueprint(views_persons.bp)
 from flaskr  import views_workrecs

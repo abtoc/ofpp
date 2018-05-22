@@ -26,6 +26,7 @@ def login():
             login_user(user)
             return redirect(request.args.get("next") or url_for("index"))
         flash('ユーザIDまたはパスワードが違います', 'danger')
+        return render_template('auth/login.pug', form=form), 401
     return render_template('auth/login.pug', form=form)
 
 @bp.route('/logout')
