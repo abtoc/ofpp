@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 
 def destroy_workrec():
     now = datetime.now()
-    now = now - relativedelta(years=2)
+    now = now - relativedelta(years=5)
     yymm = now.strftime('%Y%m')
     workrecs = WorkRec.query.filter(WorkRec.yymm<yymm).all()
     for workrec in workrecs:
