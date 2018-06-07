@@ -86,7 +86,7 @@ def make_pdf_staff(head, items, foot):
     # Header
     office_name   = Option.get('office_name',  '')
     colw = (45.5*mm, 20.5*mm, 20.5*mm, 27.5*mm, 20.5*mm, 27.5*mm)
-    data = [[head['ym'],'出退勤簿','氏名:',head['name'],'所属：',office_name]]
+    data = [[head['ym'],'出勤簿','氏名:',head['name'],'所属：',office_name]]
     table = Table(data, colWidths=colw, rowHeights=8.0*mm)
     table.setStyle([
         ('FONT',   ( 0, 0), ( 1,-1), 'Gothic', 16),
