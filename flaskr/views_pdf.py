@@ -27,13 +27,16 @@ def make_head(id,yymm):
     gg = yy - 1988
     mm = int(yymm[4:])
     head['gm']     = '平成{gg}年{mm}月分'.format(gg=gg,mm=mm)
+    head['ym']     = '{yy}年{mm}月'.format(yy=yy,mm=mm)
     head['name']   = person.name
     head['idm']    = person.idm
     head['number'] = person.number
     head['amount'] = person.amount
+    head['staff']  = person.staff
     return head
 
-def make_items(id,yymm):
+def make_items(id,yymm,staff):
+    print('---->')
     yy     = int(yymm[:4])
     mm     = int(yymm[4:])
     first  = datetime(yy, mm, 1) 
@@ -57,14 +60,106 @@ def make_items(id,yymm):
             item['in']  = workrec.work_in
             item['out'] = workrec.work_out
             item['val'] = workrec.value
+            item['break']  = workrec.break_t
+            item['reason'] = workrec.reason
             foot['cnt'] = foot['cnt'] + 1
             foot['sum'] = foot['sum'] + workrec.value
-        if first.weekday() != 6:
+        if staff:
+            items.append(item)
+        elif first.weekday() != 6:
             items.append(item)
         first = first + relativedelta(days=1)
-    while len(items) < 28:
-        items.append(None)
+    if staff:
+        while len(items) < 31:
+            items.append(None)
+    else:
+        while len(items) < 28:
+            items.append(None)
     return items,foot
+
+def make_pdf_staff(head, items, foot):
+    output = BytesIO()
+    psize  = portrait(A4)
+    xmargin = 15.0*mm
+    p = canvas.Canvas(output, pagesize=psize, bottomup=True)
+    # Title
+    # Header
+    colw = (45.5*mm, 27.5*mm, 27.5*mm, 82.0*mm)
+    data = [[head['ym'],'出退勤簿','氏名:',head['name']]]
+    table = Table(data, colWidths=colw, rowHeights=8.0*mm)
+    table.setStyle([
+        ('FONT',   ( 0, 0), ( 1,-1), 'Gothic', 16),
+        ('FONT',   ( 2, 0), (-1,-1), 'Gothic', 12),
+        ('ALIGN',  ( 0, 0), (-1,-1), 'CENTER'),
+        ('ALIGN',  ( 2, 0), ( 2,-1), 'RIGHT'),
+        ('ALIGN',  ( 3, 0), ( 3,-1), 'LEFT')
+    ])
+    table.wrapOn(p, xmargin, 272.0*mm)
+    table.drawOn(p, xmargin, 272.0*mm)
+    # Detail
+    colw = (10.0*mm, 10.0*mm, 20.0*mm, 20.0*mm, 22.0*mm, 24.5*mm, 24.5*mm, 40.5*mm)
+    data =[
+        ['日','曜日','始業時刻','終業時刻','休憩時間','労働時間','残業時間','備考']
+    ]
+    for item in items:
+        d = []
+        if item != None:
+            d.append(item['dd'])
+            d.append(item['ww'])
+            if 'in' in item:
+                d.append(item['in'])
+            else:
+                d.append('')
+            if 'out' in item:
+                d.append(item['out'])
+            else:
+                d.append('')
+            if 'break' in item:
+                d.append(item['break'])
+            else:
+                d.append('')
+            if 'val' in item:
+                d.append(item['val'])
+            else:
+                d.append('')
+            d.append('')
+            if 'reason' in item:
+                d.append(item['reason'])
+            else:
+                d.append('')
+        data.append(d)
+    table = Table(data, colWidths=colw, rowHeights=8.0*mm)
+    table.setStyle([
+        ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 12),
+        ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
+        ('BOX',    ( 0, 0), (-1,-1), 1.8, colors.black),
+        ('VALIGN', ( 0, 0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',  ( 0, 0), (-1,-1), 'CENTER'),
+        ('ALIGN',  ( 7, 1), ( 7,-1), 'LEFT')
+    ])
+    table.wrapOn(p, xmargin, 16.0*mm)
+    table.drawOn(p, xmargin, 16.0*mm)
+    # Footer
+    colw = (82.0*mm, 24.5*mm, 24.5*mm, 24.5*mm, 15.0*mm)
+    data =[
+        ['合計',foot['sum'],0.0,'出勤日数',foot['cnt']],
+    ]
+    table = Table(data, colWidths=colw, rowHeights=8.0*mm)
+    table.setStyle([
+        ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 12),
+        ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
+        ('BOX',    ( 0, 0), (-1,-1), 1.8, colors.black),
+        ('VALIGN', ( 0, 0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',  ( 0, 0), (-1,-1), 'CENTER')
+    ])
+    table.wrapOn(p, xmargin, 7.0*mm)
+    table.drawOn(p, xmargin, 7.0*mm)
+    # Page Print
+    p.showPage()
+    p.save()
+    result = output.getvalue()
+    output.close()
+    return result
 
 def make_pdf(head, items, foot):
     output = BytesIO()
@@ -208,9 +303,12 @@ def print_pdf(id,yymm):
     head = make_head(id, yymm)
     if head == None:
         abort(404)
-    items,foot = make_items(id, yymm)
+    items,foot = make_items(id, yymm, head['staff'])
     if items == None:
         abort(404)
-    response = make_response(make_pdf(head, items,foot))
+    if head['staff']:
+        response = make_response(make_pdf_staff(head, items, foot))
+    else:
+        response = make_response(make_pdf(head, items, foot))
     response.mimetype = 'application/pdf'
     return response
