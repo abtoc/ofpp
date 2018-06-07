@@ -84,20 +84,23 @@ def make_pdf_staff(head, items, foot):
     p = canvas.Canvas(output, pagesize=psize, bottomup=True)
     # Title
     # Header
-    colw = (45.5*mm, 27.5*mm, 27.5*mm, 82.0*mm)
-    data = [[head['ym'],'出退勤簿','氏名:',head['name']]]
+    office_name   = Option.get('office_name',  '')
+    colw = (45.5*mm, 20.5*mm, 20.5*mm, 27.5*mm, 20.5*mm, 27.5*mm)
+    data = [[head['ym'],'出退勤簿','氏名:',head['name'],'所属：',office_name]]
     table = Table(data, colWidths=colw, rowHeights=8.0*mm)
     table.setStyle([
         ('FONT',   ( 0, 0), ( 1,-1), 'Gothic', 16),
-        ('FONT',   ( 2, 0), (-1,-1), 'Gothic', 12),
+        ('FONT',   ( 2, 0), (-1,-1), 'Gothic', 10),
         ('ALIGN',  ( 0, 0), (-1,-1), 'CENTER'),
         ('ALIGN',  ( 2, 0), ( 2,-1), 'RIGHT'),
-        ('ALIGN',  ( 3, 0), ( 3,-1), 'LEFT')
+        ('ALIGN',  ( 3, 0), ( 3,-1), 'LEFT'),
+        ('ALIGN',  ( 4, 0), ( 4,-1), 'RIGHT'),
+        ('ALIGN',  ( 5, 0), ( 5,-1), 'LEFT'),
     ])
     table.wrapOn(p, xmargin, 272.0*mm)
     table.drawOn(p, xmargin, 272.0*mm)
     # Detail
-    colw = (10.0*mm, 10.0*mm, 20.0*mm, 20.0*mm, 22.0*mm, 24.5*mm, 24.5*mm, 40.5*mm)
+    colw = (10.0*mm, 10.0*mm, 21.5*mm, 21.5*mm, 23.0*mm, 25.5*mm, 25.5*mm, 41.0*mm)
     data =[
         ['日','曜日','始業時刻','終業時刻','休憩時間','労働時間','残業時間','備考']
     ]
@@ -140,7 +143,7 @@ def make_pdf_staff(head, items, foot):
     table.wrapOn(p, xmargin, 16.0*mm)
     table.drawOn(p, xmargin, 16.0*mm)
     # Footer
-    colw = (82.0*mm, 24.5*mm, 24.5*mm, 24.5*mm, 15.0*mm)
+    colw = (86.0*mm, 25.5*mm, 25.5*mm, 25.5*mm, 15.5*mm)
     data =[
         ['合計',foot['sum'],0.0,'出勤日数',foot['cnt']],
     ]
