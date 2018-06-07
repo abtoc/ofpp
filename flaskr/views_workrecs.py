@@ -27,12 +27,17 @@ class WorkRecEditForm(FlaskForm):
         validators=[
             Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
         ])
+    break_t  = StringField('休憩時間',
+        validators=[
+            DataRequired(message='入力必須です'),
+            Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
+        ])
     value    = StringField('勤務時間',
         validators=[
             DataRequired(message='入力必須です'),
             Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
         ])
-    break_t  = StringField('休憩時間',
+    over_t   = StringField('残業時間',
         validators=[
             DataRequired(message='入力必須です'),
             Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
