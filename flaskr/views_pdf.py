@@ -42,6 +42,7 @@ def make_items(id,yymm,staff):
     items  = []
     foot   = dict(
         sum = 0.0,
+        over = 0.0,
         cnt = 0
     )
     for dd in range(1,32):
@@ -62,8 +63,9 @@ def make_items(id,yymm,staff):
             item['break']  = workrec.break_t
             item['over']   = workrec.over_t
             item['reason'] = workrec.reason
-            foot['cnt'] = foot['cnt'] + 1
-            foot['sum'] = foot['sum'] + workrec.value
+            foot['cnt']  = foot['cnt'] + 1
+            foot['sum']  = foot['sum'] + workrec.value
+            foot['over'] = foot['over'] + workrec.over_t
         if staff:
             items.append(item)
         elif first.weekday() != 6:
@@ -148,7 +150,7 @@ def make_pdf_staff(head, items, foot):
     # Footer
     colw = (86.0*mm, 25.5*mm, 25.5*mm, 25.5*mm, 15.5*mm)
     data =[
-        ['合計',foot['sum'],0.0,'出勤日数',foot['cnt']],
+        ['合計',foot['sum'],foot['over'],'出勤日数',foot['cnt']],
     ]
     table = Table(data, colWidths=colw, rowHeights=8.0*mm)
     table.setStyle([
