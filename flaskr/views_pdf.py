@@ -36,7 +36,6 @@ def make_head(id,yymm):
     return head
 
 def make_items(id,yymm,staff):
-    print('---->')
     yy     = int(yymm[:4])
     mm     = int(yymm[4:])
     first  = datetime(yy, mm, 1) 
@@ -61,6 +60,7 @@ def make_items(id,yymm,staff):
             item['out'] = workrec.work_out
             item['val'] = workrec.value
             item['break']  = workrec.break_t
+            item['over']   = workrec.over_t
             item['reason'] = workrec.reason
             foot['cnt'] = foot['cnt'] + 1
             foot['sum'] = foot['sum'] + workrec.value
@@ -125,7 +125,10 @@ def make_pdf_staff(head, items, foot):
                 d.append(item['val'])
             else:
                 d.append('')
-            d.append('')
+            if 'over' in item:
+                d.append(item['over'])
+            else:
+                d.append('')
             if 'reason' in item:
                 d.append(item['reason'])
             else:
