@@ -41,6 +41,7 @@ class WorkRec(db.Model):
     work_in   = db.Column(db.String(5))
     work_out  = db.Column(db.String(5))
     value     = db.Column(db.Float)
+    break_t   = db.Column(db.Float)
     reason    = db.Column(db.String(128))
     create_at = db.Column(db.DateTime,   default =_get_now)
     update_at = db.Column(db.DateTime,   onupdate=_get_now)

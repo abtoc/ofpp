@@ -59,12 +59,13 @@ def post_idm(idm):
     else:
         work_in  = get_work_in(workrec.work_in, person.staff)
         work_out = get_work_out(hhmm, person.staff)
-        value    = work_out['value'] - work_in['value']
+        break_t  = 0.0
         if (work_in['value'] < 12.0) and (work_out['value'] > 13.0):
-            value = value - 1
+            break_t = 1.0
+        value    = work_out['value'] - work_in['value'] - break_t
         workrec.work_out = hhmm
         workrec.value    = value
-
+        workrec.break_t  = break_t
     db.session.add(workrec)
     try:
         db.session.commit()

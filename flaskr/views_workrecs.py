@@ -28,7 +28,12 @@ class WorkRecEditForm(FlaskForm):
             Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
         ])
     value    = StringField('勤務時間',
-            validators=[
+        validators=[
+            DataRequired(message='入力必須です'),
+            Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
+        ])
+    break_t  = StringField('休憩時間',
+        validators=[
             DataRequired(message='入力必須です'),
             Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
         ])
@@ -115,7 +120,7 @@ def create(id,yymm,dd):
         db.session.add(workrec)
         try:
             db.session.commit()
-            flash('WrkRec saved successfully.', 'success')
+            flash('WorkRec saved successfully.', 'success')
             return redirect(url_for('workrecs.index',id=id,yymm=yymm))
         except:
             db.session.rollback()
@@ -137,7 +142,7 @@ def edit(id,yymm,dd):
         db.session.add(workrec)
         try:
             db.session.commit()
-            flash('WrkRec saved successfully.', 'success')
+            flash('WorkRec saved successfully.', 'success')
             return redirect(url_for('workrecs.index',id=id,yymm=yymm))
         except:
             db.session.rollback()
