@@ -1,6 +1,6 @@
 from flask         import Blueprint
 from flask         import request, jsonify
-from flaskr        import db
+from flaskr        import db, cache
 from flaskr.models import Person, WorkRec
 from flaskr.workrule import *
 from datetime      import datetime
@@ -30,6 +30,7 @@ def get_work_out(hhmm, staff):
 
 @bp.route('/<idm>',methods=['GET'])
 def get_idm(idm):
+    cache.set('idm', idm, 5*60)
     person = Person.query.filter_by(idm=idm).first()
     if person == None:
         return jsonify({"name": "該当者無し"}), 404
@@ -40,6 +41,7 @@ def get_idm(idm):
 
 @bp.route('/<idm>',methods=['POST'])
 def post_idm(idm):
+    cache.set('idm', None, 5*60)
     person = Person.query.filter_by(idm=idm).first()
     if person == None:
         return jsonify({"message": "Not Found!"}), 404

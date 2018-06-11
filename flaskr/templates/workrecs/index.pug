@@ -47,12 +47,13 @@ block content
                     else
                         td: .text-left= item['reson']
                     td
-                        .row
-                            a.btn.btn-sm.btn-danger.pull-right(href="{{ url_for('workrecs.destroy', id=person.id, yymm=yymm, dd=item['dd']) }}") 削除
-                            if item['creation']
-                                a.btn.btn-primary.btn-sm.pull-right(href="{{ url_for('workrecs.create', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
-                            else
-                                a.btn.btn-primary.btn-sm.pull-right(href="{{ url_for('workrecs.edit', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
+                        if head['idm']:
+                            .row
+                                a.btn.btn-sm.btn-danger.pull-right(href="{{ url_for('workrecs.destroy', id=person.id, yymm=yymm, dd=item['dd']) }}") 削除
+                                if item['creation']
+                                    a.btn.btn-primary.btn-sm.pull-right(href="{{ url_for('workrecs.create', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
+                                else
+                                    a.btn.btn-primary.btn-sm.pull-right(href="{{ url_for('workrecs.edit', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
         tfoot
             tr
                 th(colspan="2")

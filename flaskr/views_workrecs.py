@@ -6,7 +6,7 @@ from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField,DecimalField
 from wtforms.validators import DataRequired, Regexp
-from flaskr        import db, weeka
+from flaskr        import db, weeka, cache
 from flaskr.models import Person,WorkRec
 
 bp = Blueprint('workrecs', __name__, url_prefix="/workrecs")
@@ -75,7 +75,8 @@ def index(id,yymm=None):
     items    = []
     head     = dict(
         prev=prev.strftime('%Y%m'), 
-        next=last.strftime('%Y%m')
+        next=last.strftime('%Y%m'),
+        idm=person.idm == cache.get('idm')
     )
     foot     = dict(
         sum=0.0,
@@ -118,8 +119,11 @@ def create(id,yymm,dd):
     person   = Person.query.filter_by(id=id).first()
     if person is None:
         abort(404)
+    idm      = cache.get('idm')
     form     = WorkRecCreateForm()
-    if form.validate_on_submit():
+    if idm != person.idm:
+        flash('利用者のICカードをタッチしてください', 'danger')
+    if (idm == person.idm) and (form.validate_on_submit()):
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
         form.populate_obj(workrec)
         db.session.add(workrec)
@@ -141,8 +145,11 @@ def edit(id,yymm,dd):
     workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm,dd=dd).first()
     if workrec is None:
         abort(404)
+    idm      = cache.get('idm')
     form     = WorkRecEditForm(obj=workrec)
-    if form.validate_on_submit():
+    if idm != person.idm:
+        flash('利用者のICカードをタッチしてください', 'danger')
+    if (idm == person.idm) and (form.validate_on_submit()):
         form.populate_obj(workrec)
         db.session.add(workrec)
         try:
@@ -157,8 +164,14 @@ def edit(id,yymm,dd):
 @bp.route('/<id>/<yymm>/<dd>/destroy')
 @login_required
 def destroy(id,yymm,dd):
+    person   = Person.query.filter_by(id=id).first()
+    if person is None:
+        abort(404)
+    idm      = cache.get('idm')
     workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
-    if workrec != None:
+    if idm != person.idm:
+        flash('利用者のICカードをタッチしてください', 'danger')
+    if (idm == person.idm) and (workrec is not None):
         db.session.delete(workrec)
         try:
             db.session.commit()

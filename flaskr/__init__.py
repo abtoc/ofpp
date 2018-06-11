@@ -2,6 +2,7 @@ from flask             import Flask
 from flask_login       import LoginManager
 from flask_sqlalchemy  import SQLAlchemy
 from flask_apscheduler import APScheduler
+from werkzeug.contrib.cache import SimpleCache
 #import locale
 #locale.setlocale(locale.LC_TIME, 'ja_JP.UTF-8')
 
@@ -17,6 +18,7 @@ lm.init_app(app)
 lm.login_view = 'auth.login'
 
 db = SQLAlchemy(app)
+cache = SimpleCache()
 
 scheduler = APScheduler()
 scheduler.init_app(app)
