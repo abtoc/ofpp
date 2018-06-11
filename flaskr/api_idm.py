@@ -39,6 +39,11 @@ def get_idm(idm):
     )
     return jsonify(result), 200
 
+@bp.route('/<idm>',methods=['DELETE'])
+def delete_idm(idm):
+    cache.set('idm', None, 30*60)
+    return jsonify({}), 200
+
 @bp.route('/<idm>',methods=['POST'])
 def post_idm(idm):
     cache.set('idm', None, 5*60)
