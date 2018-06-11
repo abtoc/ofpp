@@ -30,7 +30,7 @@ def get_work_out(hhmm, staff):
 
 @bp.route('/<idm>',methods=['GET'])
 def get_idm(idm):
-    cache.set('idm', idm, 5*60)
+    cache.set('idm', idm, 10*60)
     person = Person.query.filter_by(idm=idm).first()
     if person == None:
         return jsonify({"name": "該当者無し"}), 404
