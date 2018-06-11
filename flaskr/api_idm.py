@@ -32,7 +32,7 @@ def get_work_out(hhmm, staff):
 def get_idm(idm):
     cache.set('idm', idm, 30*60)
     person = Person.query.filter_by(idm=idm).first()
-    if person == None:
+    if person is None:
         return jsonify({"name": "該当者無し"}), 404
     result = dict(
         name=person.name
@@ -43,7 +43,7 @@ def get_idm(idm):
 def post_idm(idm):
     cache.set('idm', None, 5*60)
     person = Person.query.filter_by(idm=idm).first()
-    if person == None:
+    if person is None:
         return jsonify({"message": "Not Found!"}), 404
     now=datetime.now()
     yymm=now.strftime('%Y%m')
@@ -53,7 +53,7 @@ def post_idm(idm):
         person_id=person.id, yymm=yymm, dd=dd
     ).first()
     creation=False
-    if workrec == None:
+    if workrec is None:
         creation = True
         work_in = get_work_in(hhmm, person.staff)
         #workrec = WorkRec(person_id=person.id, yymm=yymm,dd=dd, work_in=work_in['caption'])
