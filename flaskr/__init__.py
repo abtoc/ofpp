@@ -2,6 +2,7 @@ from flask             import Flask
 from flask_login       import LoginManager
 from flask_sqlalchemy  import SQLAlchemy
 from flask_apscheduler import APScheduler
+from flask_httpauth    import HTTPBasicAuth
 from werkzeug.contrib.cache import SimpleCache
 #import locale
 #locale.setlocale(locale.LC_TIME, 'ja_JP.UTF-8')
@@ -16,6 +17,8 @@ app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 lm = LoginManager()
 lm.init_app(app)
 lm.login_view = 'auth.login'
+
+auth = HTTPBasicAuth()
 
 db = SQLAlchemy(app)
 cache = SimpleCache()

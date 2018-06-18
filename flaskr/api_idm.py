@@ -1,12 +1,17 @@
 from flask         import Blueprint
 from flask         import request, jsonify
-from flaskr        import db, cache
-from flaskr.models import Person, WorkRec
+from flaskr        import db, cache, auth
+from flaskr.models import Person, WorkRec, User
 from flaskr.workrule import *
 from datetime      import datetime
 import json
 
 bp = Blueprint('api_idm', __name__, url_prefix="/api/idm")
+
+@auth.verify_password
+def verify_pw(username,password):
+    user, checked = User.auth(username,password)
+    return checked
 
 def get_work_in(hhmm, staff):
     if staff:
@@ -29,6 +34,7 @@ def get_work_out(hhmm, staff):
     return None
 
 @bp.route('/<idm>',methods=['GET'])
+@auth.login_required
 def get_idm(idm):
     cache.set('idm', idm, 30*60)
     person = Person.query.filter_by(idm=idm).first()
@@ -40,11 +46,13 @@ def get_idm(idm):
     return jsonify(result), 200
 
 @bp.route('/<idm>',methods=['DELETE'])
+@auth.login_required
 def delete_idm(idm):
     cache.set('idm', None, 30*60)
     return jsonify({}), 200
 
 @bp.route('/<idm>',methods=['POST'])
+@auth.login_required
 def post_idm(idm):
     cache.set('idm', None, 5*60)
     person = Person.query.filter_by(idm=idm).first()
