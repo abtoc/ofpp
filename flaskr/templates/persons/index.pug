@@ -32,6 +32,6 @@ block content
                     td= person.update_at
                     td
                         .btn-group
-                            a.btn.btn-sm.btn-danger.pull-right(href="{{ url_for('persons.destroy',id=person.id) }}") 削除
-                            a.btn.btn-sm.btn-primary.pull-right(href="{{ url_for('persons.edit',id=person.id) }}") 編集
-                            a.btn.btn-sm.btn-info.pull-right(href="{{ url_for('workrecs.index',id=person.id) }}") 出退勤簿
+                            a.btn.btn-sm.btn-info(href="{{ url_for('workrecs.index',id=person.id) }}") 出退勤簿
+                            a.btn.btn-sm.btn-primary(href="{{ url_for('persons.edit',id=person.id) }}") 編集
+                            a.btn.btn-sm.btn-danger(href="{{ url_for('persons.destroy',id=person.id) }}") 削除
