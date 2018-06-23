@@ -48,7 +48,7 @@ block content
                         td: .text-left= item['reson']
                     td
                         if head['idm']:
-                            .row
+                            .btn-group
                                 a.btn.btn-sm.btn-danger.pull-right(href="{{ url_for('workrecs.destroy', id=person.id, yymm=yymm, dd=item['dd']) }}") 削除
                                 if item['creation']
                                     a.btn.btn-primary.btn-sm.pull-right(href="{{ url_for('workrecs.create', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集

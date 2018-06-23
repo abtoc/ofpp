@@ -20,5 +20,5 @@ block content
                     td= user.update_at
                     td
                         if user.userid != 'admin'
-                            .row
+                            .btn-group
                                 a.btn.btn-danger.pull-right(href="{{ url_for('users.destroy',id=user.id) }}") 削除
