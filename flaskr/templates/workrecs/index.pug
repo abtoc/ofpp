@@ -9,7 +9,7 @@ block content
     table.table.table-striped.table-hover
         thead
             tr
-                td(colspan="2"): .text-left
+                td(colspan="3"): .text-left
                     a(href="{{ url_for('workrecs.index', id=person.id, yymm=head['prev']) }}") <<前月
                 th: .text-center {{ yymm[:4] }}年{{ yymm[4:] }}月
                 th: .text-center 出退勤簿
@@ -20,6 +20,7 @@ block content
             tr
                 th: .text-right 日
                 th: .text-center 曜日
+                th: .text-center 状況
                 th: .text-center 開始時刻
                 th: .text-center 終了時刻
                 th: .text-right 勤務時間
@@ -30,6 +31,10 @@ block content
                 tr
                     td: .text-right= item["dd"]
                     td: .text-center= item['week']
+                    if item['situation'] == None:
+                        td
+                    else
+                        td: .text-center= item['situation']
                     if item['work_in'] == None:
                         td
                     else
@@ -47,12 +52,12 @@ block content
                     else
                         td: .text-left= item['reson']
                     td
-                        if head['idm']:
-                            .btn-group
-                                if item['creation']
-                                    a.btn.btn-primary.btn-sm(href="{{ url_for('workrecs.create', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
-                                else
-                                    a.btn.btn-primary.btn-sm(href="{{ url_for('workrecs.edit', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
+                        .btn-group
+                            if item['creation']
+                                a.btn.btn-primary.btn-sm(href="{{ url_for('workrecs.create', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
+                            else
+                                a.btn.btn-primary.btn-sm(href="{{ url_for('workrecs.edit', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
+                            if head['idm']:
                                 a.btn.btn-sm.btn-danger(href="{{ url_for('workrecs.destroy', id=person.id, yymm=yymm, dd=item['dd']) }}") 削除
         tfoot
             tr

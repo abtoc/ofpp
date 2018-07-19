@@ -53,7 +53,12 @@ def make_items(id,yymm,staff):
         item['dd'] = first.day
         item['ww'] = weeka[first.weekday()]
         workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
-        if (workrec == None) or (workrec.value is None) or (workrec.value == 0.0):
+        if workrec is None:
+            item['stat'] = '－'
+        elif (workrec.situation is not None) and (len(workrec.situation) > 0):
+            item['stat'] = workrec.situation
+            item['reason'] = workrec.reason 
+        elif (workrec.value is None) or (workrec.value == 0.0):
             item['stat'] = '－'
         else:
             item['stat'] = '○'
@@ -225,6 +230,17 @@ def make_pdf(head, items, foot):
                 d.append(item['val'])
             else:
                 d.append('')
+            d.append('')
+            d.append('')
+            d.append('')
+            d.append('')
+            d.append('')
+            d.append('')
+            if 'reason' in item:
+                d.append(item['reason'])
+            else:
+                d.append('')
+
         data.append(d)
     table = Table(data, colWidths=colw, rowHeights=7.0*mm)
     table.setStyle([

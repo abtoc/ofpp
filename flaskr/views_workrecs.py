@@ -12,6 +12,7 @@ from flaskr.models import Person,WorkRec
 bp = Blueprint('workrecs', __name__, url_prefix="/workrecs")
 
 class WorkRecCreateForm(FlaskForm):
+    situation = StringField('状況')
     work_in  = StringField('開始時刻',
         validators=[
             Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
@@ -19,6 +20,7 @@ class WorkRecCreateForm(FlaskForm):
     reason   = StringField('欠席理由・備考')
 
 class WorkRecEditForm(FlaskForm):
+    situation = StringField('状況')
     work_in  = StringField('開始時刻', 
         validators=[
             Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
@@ -43,6 +45,11 @@ class WorkRecEditForm(FlaskForm):
             Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
         ])
     reason   = StringField('欠席理由・備考')
+
+class WorkRecAbsenceForm(FlaskForm):
+    situation = StringField('状況')
+    reason   = StringField('欠席理由・備考')
+
 
 def _check_yymmdd(yymm, dd=1):
     if len(yymm) != 6:
@@ -87,6 +94,7 @@ def index(id,yymm=None):
         item = dict(
             dd=first.day,
             week=weeka[first.weekday()],
+            situation=None,
             work_in=None,
             work_out=None,
             value=None,
@@ -95,6 +103,7 @@ def index(id,yymm=None):
         )
         workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=first.day).first()
         if workrec != None:
+            item['situation'] = workrec.situation
             item['work_in']  = workrec.work_in
             item['work_out'] = workrec.work_out
             item['value']    = workrec.value
@@ -120,10 +129,11 @@ def create(id,yymm,dd):
     if person is None:
         abort(404)
     idm      = cache.get('idm')
-    form     = WorkRecCreateForm()
     if idm != person.idm:
-        flash('利用者のICカードをタッチしてください', 'danger')
-    if (idm == person.idm) and (form.validate_on_submit()):
+        form = WorkRecAbsenceForm()
+    else:
+        form = WorkRecCreateForm()
+    if form.validate_on_submit():
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
         form.populate_obj(workrec)
         db.session.add(workrec)
@@ -146,10 +156,11 @@ def edit(id,yymm,dd):
     if workrec is None:
         abort(404)
     idm      = cache.get('idm')
-    form     = WorkRecEditForm(obj=workrec)
     if idm != person.idm:
-        flash('利用者のICカードをタッチしてください', 'danger')
-    if (idm == person.idm) and (form.validate_on_submit()):
+        form = WorkRecAbsenceForm(obj=workrec)
+    else:
+        form = WorkRecEditForm(obj=workrec)
+    if form.validate_on_submit():
         form.populate_obj(workrec)
         db.session.add(workrec)
         try:

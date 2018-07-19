@@ -38,6 +38,7 @@ class WorkRec(db.Model):
     person_id = db.Column(db.String(36), db.ForeignKey('persons.id'), primary_key=True)
     yymm      = db.Column(db.String(8),  primary_key=True)
     dd        = db.Column(db.Integer,    primary_key=True)
+    situation = db.Column(db.String(8))
     work_in   = db.Column(db.String(5))
     work_out  = db.Column(db.String(5))
     value     = db.Column(db.Float)
