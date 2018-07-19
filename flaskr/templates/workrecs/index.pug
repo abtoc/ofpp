@@ -57,7 +57,7 @@ block content
                                 a.btn.btn-primary.btn-sm(href="{{ url_for('workrecs.create', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
                             else
                                 a.btn.btn-primary.btn-sm(href="{{ url_for('workrecs.edit', id=person.id, yymm=yymm, dd=item['dd']) }}") 編集
-                            if head['idm']:
+                            if (head['idm']) or ((item['value'] == None) and (item['situation'] != None)):
                                 a.btn.btn-sm.btn-danger(href="{{ url_for('workrecs.destroy', id=person.id, yymm=yymm, dd=item['dd']) }}") 削除
         tfoot
             tr
