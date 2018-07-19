@@ -17,6 +17,7 @@ class Person(db.Model):
     __table_args__ = {'mysql_engine': 'InnoDB'}
     id        = db.Column(db.String(36), primary_key=True, default=_gen_uuid)
     name      = db.Column(db.String(64), nullable=False)
+    display   = db.Column(db.String(64), nullable=False)
     idm       = db.Column(db.String(16), unique=True)
     enabled   = db.Column(db.Boolean,    nullable=False)
     staff     = db.Column(db.Boolean,    nullable=False)

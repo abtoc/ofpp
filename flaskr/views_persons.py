@@ -15,6 +15,9 @@ class PersonForm(FlaskForm):
     name = StringField('名前', validators=[
             DataRequired(message='必須入力です')
         ])
+    display = StringField('表示名', validators=[
+            DataRequired(message='必須入力です')
+        ])
     idm    = StringField('IDM')
     enabled = BooleanField('有効化', default='checked')
     staff   = BooleanField('職員')

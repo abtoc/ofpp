@@ -41,7 +41,7 @@ def get_idm(idm):
     if person is None:
         return jsonify({"name": "該当者無し"}), 404
     result = dict(
-        name=person.name
+        name=person.display
     )
     return jsonify(result), 200
 
