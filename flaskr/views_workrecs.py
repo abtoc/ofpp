@@ -71,7 +71,7 @@ def index(id,yymm=None):
     person   = Person.query.filter_by(id=id).first()
     if person is None:
         abort(404)
-    if yymm == None:
+    if yymm is None:
         now  = datetime.now()
         yymm = now.strftime('%Y%m')
     else:
