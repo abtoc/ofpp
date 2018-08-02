@@ -180,9 +180,9 @@ def destroy(id,yymm,dd):
         abort(404)
     idm      = cache.get('idm')
     workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
-    if idm != person.idm:
+    if (idm != person.idm) and ((workrec is not None) and (workrec.work_in is not None)):
         flash('利用者のICカードをタッチしてください', 'danger')
-    if (idm == person.idm) and (workrec is not None):
+    if (workrec is not None) and ((idm == person.idm) or (workrec.work_in is None)):
         db.session.delete(workrec)
         try:
             db.session.commit()
