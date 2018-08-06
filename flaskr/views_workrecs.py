@@ -48,6 +48,14 @@ class WorkRecEditForm(FlaskForm):
 
 class WorkRecAbsenceForm(FlaskForm):
     situation = StringField('状況')
+    break_t  = StringField('休憩時間',
+        validators=[
+            Regexp(message='数字で入力してください',regex='^([0-9]+(\.[0-9])?)?$')
+        ])
+    value    = StringField('勤務時間',
+        validators=[
+            Regexp(message='数字で入力してください',regex='^([0-9]+(\.[0-9])?)?$')
+        ])
     reason   = StringField('欠席理由・備考')
 
 
@@ -136,6 +144,10 @@ def create(id,yymm,dd):
     if form.validate_on_submit():
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
         form.populate_obj(workrec)
+        if len(workrec.value) == 0:
+            workrec.value = None
+        if len(workrec.break_t) == 0:
+            workrec.break_t = None
         db.session.add(workrec)
         try:
             db.session.commit()
@@ -162,6 +174,10 @@ def edit(id,yymm,dd):
         form = WorkRecEditForm(obj=workrec)
     if form.validate_on_submit():
         form.populate_obj(workrec)
+        if len(workrec.value) == 0:
+            workrec.value = None
+        if len(workrec.break_t) == 0:
+            workrec.break_t = None
         db.session.add(workrec)
         try:
             db.session.commit()
