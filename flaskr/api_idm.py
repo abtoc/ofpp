@@ -78,6 +78,9 @@ def post_idm(idm):
         if (work_in['value'] < 12.0) and (work_out['value'] > 13.0):
             break_t = 1.0
         value    = work_out['value'] - work_in['value'] - break_t
+        if value < 0:
+            value = 0
+            break_t = 0
         over_t   = 0.0
         if value > 8.0:
             over_t = value - 8.0
