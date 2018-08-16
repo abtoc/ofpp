@@ -144,10 +144,6 @@ def create(id,yymm,dd):
     if form.validate_on_submit():
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
         form.populate_obj(workrec)
-        if len(workrec.value) == 0:
-            workrec.value = None
-        if len(workrec.break_t) == 0:
-            workrec.break_t = None
         db.session.add(workrec)
         try:
             db.session.commit()
