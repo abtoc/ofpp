@@ -2,7 +2,7 @@ from flask         import Blueprint
 from flask         import request, redirect, url_for, render_template, flash, abort
 from flask_login   import login_required
 from flask_wtf     import FlaskForm
-from wtforms       import StringField, BooleanField
+from wtforms       import StringField, BooleanField, DateField
 from wtforms.validators import DataRequired, Regexp
 from sqlalchemy    import func
 from flaskr        import db
@@ -29,6 +29,7 @@ class PersonForm(FlaskForm):
         validators=[
             DataRequired(message='入力必須です')
         ])
+    usestart = DateField('利用開始日')
 
 @bp.route('/')
 @login_required

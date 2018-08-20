@@ -33,6 +33,22 @@ def make_head(id,yymm):
     head['number'] = person.number
     head['amount'] = person.amount
     head['staff']  = person.staff
+    usestart = person.usestart
+    if usestart is not None:
+        usestart30d = usestart + relativedelta(days=30)
+        yy1 = usestart.year
+        mm1 = usestart.month
+        yy2 = usestart30d.year
+        mm2 = usestart30d.month
+        if ((yy1 == yy) and (mm1 == mm)) or ((yy2 == yy) and (mm2 == mm)):
+            pass
+        else:
+            usestart = ''
+            usestart30d = '' 
+    else:
+        usestart30d = ''
+    head['usestart'] = usestart
+    head['usestart30'] = usestart30d 
     return head
 
 def make_items(id,yymm,staff):
@@ -300,7 +316,7 @@ def make_pdf(head, items, foot):
     table.drawOn(p, xmargin, 23.2*mm)
     colw=(28.0*mm,21.5*mm,30.5*mm,21.5*mm,30.5*mm,21.5*mm,30.5*mm)
     data=[
-        ['初期加算','利用開始日','','30日目','','当月算定日数','']
+        ['初期加算','利用開始日',head['usestart'],'30日目',head['usestart30'],'当月算定日数','']
     ]
     table = Table(data, colWidths=colw, rowHeights=6.5*mm)
     table.setStyle([
