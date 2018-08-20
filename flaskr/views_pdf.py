@@ -74,7 +74,7 @@ def make_items(id,yymm,staff):
         elif (workrec.situation is not None) and (len(workrec.situation) > 0):
             item['stat'] = workrec.situation
             item['reason'] = workrec.reason 
-        elif (workrec.value is None) or (workrec.value == 0.0):
+        elif workrec.value is None:
             item['stat'] = '－'
         else:
             item['stat'] = '○'
