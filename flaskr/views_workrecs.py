@@ -58,7 +58,6 @@ class WorkRecAbsenceForm(FlaskForm):
         ])
     over_t   = StringField('残業時間',
         validators=[
-            DataRequired(message='入力必須です'),
             Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
         ])
     reason   = StringField('欠席理由・備考')
