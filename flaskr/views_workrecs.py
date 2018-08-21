@@ -153,6 +153,8 @@ def create(id,yymm,dd):
             workrec.value = None
         if (workrec.break_t is not None) and (len(workrec.break_t) == 0):
             workrec.break_t = None
+        if (workrec.over_t is not None) and (len(workrec.over_t) == 0):
+            workrec.over_t = None
         db.session.add(workrec)
         try:
             db.session.commit()
@@ -183,6 +185,8 @@ def edit(id,yymm,dd):
             workrec.value = None
         if len(workrec.break_t) == 0:
             workrec.break_t = None
+        if len(workrec.over_t) == 0:
+            workrec.over_t = None
         db.session.add(workrec)
         try:
             db.session.commit()
