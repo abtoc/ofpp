@@ -56,7 +56,6 @@ def make_items(id,yymm,staff):
     mm     = int(yymm[4:])
     first  = datetime(yy, mm, 1)
     last   = first + relativedelta(months=1) - relativedelta(days=1)
-    print(last)
     last   = last.day - 8
     count  = 0
     items  = []
@@ -80,7 +79,7 @@ def make_items(id,yymm,staff):
             item['reason'] = workrec.reason 
         elif workrec.value is None:
             item['stat'] = '－'
-        elif (not staff) and (count > last):
+        elif (not staff) and (count >= last):
             item['stat'] = '－'
         else:
             item['stat']   = '○'
