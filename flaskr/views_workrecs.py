@@ -177,19 +177,19 @@ def edit(id,yymm,dd):
         form = WorkRecEditForm(obj=workrec)
     if form.validate_on_submit():
         form.populate_obj(workrec)
-        if len(workrec.situation) == 0:
+        if (workrec.situation is not None) and (len(workrec.situation) == 0):
             workrec.situation = None
-        if len(workrec.work_in) == 0:
+        if (workrec.work_in is not None) and (len(workrec.work_in) == 0):
             workrec.work_in = None
-        if len(workrec.work_out) == 0:
+        if (workrec.work_out is not None) and (len(workrec.work_out) == 0):
             workrec.work_out = None
-        if len(workrec.value) == 0:
+        if (workrec.value is not None) and (len(workrec.value) == 0):
             workrec.value = None
-        if len(workrec.break_t) == 0:
+        if (workrec.break_t is not None) and (len(workrec.break_t) == 0):
             workrec.break_t = None
-        if len(workrec.over_t) == 0:
+        if (workrec.over_t is not None) and (len(workrec.over_t) == 0):
             workrec.over_t = None
-        if len(workrec.reason) == 0:
+        if (workrec.reason is not None) and (len(workrec.reason) == 0):
             workrec.reason = None
         db.session.add(workrec)
         try:

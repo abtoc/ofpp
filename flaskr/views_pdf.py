@@ -74,7 +74,7 @@ def make_items(id,yymm,staff):
         workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
         if workrec is None:
             item['stat'] = '－'
-        elif (not staff) and (count >= last):
+        elif (not staff) and (workrec.value is not None) and (count >= last):
             item['stat'] = '－'
         else:
             if (workrec.situation is not None) and (len(workrec.situation) > 0):
