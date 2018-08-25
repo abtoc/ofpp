@@ -14,7 +14,7 @@ block content
                 th: .text-center {{ yymm[:4] }}年{{ yymm[4:] }}月
                 th: .text-center 出退勤簿
                 th: .text-right 氏名：
-                th: .text-left= person.name
+                th: .text-left= person.display
                 td: .text-right
                     a(href="{{ url_for('workrecs.index', id=person.id, yymm=head['next']) }}") 次月>>
             tr
