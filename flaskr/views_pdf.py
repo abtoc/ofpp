@@ -74,25 +74,27 @@ def make_items(id,yymm,staff):
         workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
         if workrec is None:
             item['stat'] = '－'
-        elif (workrec.situation is not None) and (len(workrec.situation) > 0):
-            item['stat'] = workrec.situation
-            item['reason'] = workrec.reason 
-        elif workrec.value is None:
-            item['stat'] = '－'
         elif (not staff) and (count >= last):
             item['stat'] = '－'
         else:
-            item['stat']   = '○'
+            if (workrec.situation is not None) and (len(workrec.situation) > 0):
+                item["stat"] = workrec.situation
+            elif workrec.value is None:
+                item["stat"]   = '−'
+            else:
+                item['stat']   = '○'
             item['in']     = workrec.work_in
             item['out']    = workrec.work_out
             item['val']    = workrec.value
             item['break']  = workrec.break_t
             item['over']   = workrec.over_t
             item['reason'] = workrec.reason
-            foot['cnt']    = foot['cnt']  + 1
-            foot['sum']    = foot['sum']  + workrec.value
-            foot['over']   = foot['over'] + workrec.over_t
-            count          = count        + 1
+            if workrec.value is not None:
+                foot['cnt']    = foot['cnt']  + 1
+                foot['sum']    = foot['sum']  + workrec.value
+                count          = count        + 1
+            if workrec.over_t is not None:
+                foot['over']   = foot['over'] + workrec.over_t
         if staff:
             items.append(item)
         elif first.weekday() != 6:

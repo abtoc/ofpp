@@ -11,38 +11,27 @@ from flaskr.models import Person,WorkRec
 
 bp = Blueprint('workrecs', __name__, url_prefix="/workrecs")
 
-class WorkRecCreateForm(FlaskForm):
-    situation = StringField('状況')
-    work_in  = StringField('開始時刻',
-        validators=[
-            Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
-        ])
-    reason   = StringField('欠席理由・備考')
-
 class WorkRecEditForm(FlaskForm):
     situation = StringField('状況')
     work_in  = StringField('開始時刻', 
         validators=[
-            Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
+            Regexp(message='HH:MMで入力してください',regex='^(([0-9]{2}:[0-9]{2})?)?$')
         ])
     work_out = StringField('終了時刻',
         validators=[
-            Regexp(message='HH:MMで入力してください',regex='^([0-9]{2}:[0-9]{2})?$')
+            Regexp(message='HH:MMで入力してください',regex='^(([0-9]{2}:[0-9]{2})?)?$')
         ])
     break_t  = StringField('休憩時間',
         validators=[
-            DataRequired(message='入力必須です'),
-            Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
+            Regexp(message='数字で入力してください',regex='^([0-9]+(\.[0-9])?)?$')
         ])
     value    = StringField('勤務時間',
         validators=[
-            DataRequired(message='入力必須です'),
-            Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
+            Regexp(message='数字で入力してください',regex='^([0-9]+(\.[0-9])?)?$')
         ])
     over_t   = StringField('残業時間',
         validators=[
-            DataRequired(message='入力必須です'),
-            Regexp(message='数字で入力してください',regex='^[0-9]+(\.[0-9])?$')
+            Regexp(message='数字で入力してください',regex='^([0-9]+(\.[0-9])?)?$')
         ])
     reason   = StringField('欠席理由・備考')
 
@@ -144,16 +133,24 @@ def create(id,yymm,dd):
     if idm != person.idm:
         form = WorkRecAbsenceForm()
     else:
-        form = WorkRecCreateForm()
+        form = WorkRecEditForm()
     if form.validate_on_submit():
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
         form.populate_obj(workrec)
+        if (workrec.situation is not None) and (len(workrec.situation) == 0):
+            workrec.situation = None
+        if (workrec.work_in is not None) and (len(workrec.work_in) == 0):
+            workrec.work_in = None
+        if (workrec.work_out is not None) and (len(workrec.work_out) == 0):
+            workrec.work_out = None
         if (workrec.value is not None) and (len(workrec.value) == 0):
             workrec.value = None
         if (workrec.break_t is not None) and (len(workrec.break_t) == 0):
             workrec.break_t = None
         if (workrec.over_t is not None) and (len(workrec.over_t) == 0):
             workrec.over_t = None
+        if (workrec.reason is not None) and (len(workrec.reason) == 0):
+            workrec.reason = None
         db.session.add(workrec)
         try:
             db.session.commit()
@@ -180,12 +177,20 @@ def edit(id,yymm,dd):
         form = WorkRecEditForm(obj=workrec)
     if form.validate_on_submit():
         form.populate_obj(workrec)
+        if len(workrec.situation) == 0:
+            workrec.situation = None
+        if len(workrec.work_in) == 0:
+            workrec.work_in = None
+        if len(workrec.work_out) == 0:
+            workrec.work_out = None
         if len(workrec.value) == 0:
             workrec.value = None
         if len(workrec.break_t) == 0:
             workrec.break_t = None
         if len(workrec.over_t) == 0:
             workrec.over_t = None
+        if len(workrec.reason) == 0:
+            workrec.reason = None
         db.session.add(workrec)
         try:
             db.session.commit()

@@ -3,7 +3,7 @@ from flask         import request, redirect, url_for, render_template, flash, ab
 from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField, BooleanField, DateField
-from wtforms.validators import DataRequired, Regexp
+from wtforms.validators import DataRequired, Regexp, Optional
 from sqlalchemy    import func
 from flaskr        import db
 from flaskr.models import Person,WorkRec
@@ -29,7 +29,10 @@ class PersonForm(FlaskForm):
         validators=[
             DataRequired(message='入力必須です')
         ])
-    usestart = DateField('利用開始日(YYYY-MM-DDで入力してください)')
+    usestart = DateField('利用開始日(YYYY-MM-DDで入力してください)',
+        validators=[
+            Optional()
+        ])
 
 @bp.route('/')
 @login_required
@@ -46,6 +49,8 @@ def create():
         form.populate_obj(person)
         if person.idm == '':
             person.idm = None
+        if person.usestart == '':
+            person.usestart = None
         db.session.add(person)
         try:
           db.session.commit()
@@ -70,6 +75,8 @@ def edit(id):
         form.populate_obj(person)
         if person.idm == '':
             person.idm = None
+        if person.usestart == '':
+            person.usestart = None
         db.session.add(person)
         try:
           db.session.commit()
