@@ -11,7 +11,7 @@ block content
         tbody
             for person in persons
                 tr
-                    td= person.name
+                    td= person.display
                     td
                         .row
                             a.btn.btn-info.pull-right(href="{{ url_for('workrecs.index',id=person.id) }}") 出退勤簿
