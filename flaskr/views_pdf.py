@@ -54,7 +54,11 @@ def make_head(id,yymm):
 def make_items(id,yymm,staff):
     yy     = int(yymm[:4])
     mm     = int(yymm[4:])
-    first  = datetime(yy, mm, 1) 
+    first  = datetime(yy, mm, 1)
+    last   = first + relativedelta(months=1) - relativedelta(days=1)
+    print(last)
+    last   = last.day - 8
+    count  = 0
     items  = []
     foot   = dict(
         sum = 0.0,
@@ -76,17 +80,20 @@ def make_items(id,yymm,staff):
             item['reason'] = workrec.reason 
         elif workrec.value is None:
             item['stat'] = '－'
+        elif (not staff) and (count > last):
+            item['stat'] = '－'
         else:
-            item['stat'] = '○'
-            item['in']  = workrec.work_in
-            item['out'] = workrec.work_out
-            item['val'] = workrec.value
+            item['stat']   = '○'
+            item['in']     = workrec.work_in
+            item['out']    = workrec.work_out
+            item['val']    = workrec.value
             item['break']  = workrec.break_t
             item['over']   = workrec.over_t
             item['reason'] = workrec.reason
-            foot['cnt']  = foot['cnt'] + 1
-            foot['sum']  = foot['sum'] + workrec.value
-            foot['over'] = foot['over'] + workrec.over_t
+            foot['cnt']    = foot['cnt']  + 1
+            foot['sum']    = foot['sum']  + workrec.value
+            foot['over']   = foot['over'] + workrec.over_t
+            count          = count        + 1
         if staff:
             items.append(item)
         elif first.weekday() != 6:
