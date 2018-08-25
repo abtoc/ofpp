@@ -29,7 +29,7 @@ class PersonForm(FlaskForm):
         validators=[
             DataRequired(message='入力必須です')
         ])
-    usestart = DateField('利用開始日')
+    usestart = DateField('利用開始日(YYYY-MM-DDで入力してください)')
 
 @bp.route('/')
 @login_required
