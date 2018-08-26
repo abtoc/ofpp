@@ -5,12 +5,14 @@ from flask_wtf     import FlaskForm
 from wtforms       import StringField, PasswordField
 from wtforms.validators import DataRequired, EqualTo
 from flaskr        import db
+from flaskr.validators import Unique
 from flaskr.models import User
 
 bp = Blueprint('users', __name__, url_prefix="/users")
 
 class UsersNewForm(FlaskForm):
     userid = StringField('ユーザID', validators=[
+            Unique(User, User.userid, message='同一ユーザIDが指定されています'),
             DataRequired(message='必須入力です')
         ])
     password = PasswordField('パスワード', validators=[
