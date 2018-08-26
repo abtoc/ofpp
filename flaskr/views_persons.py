@@ -3,7 +3,7 @@ from flask         import request, redirect, url_for, render_template, flash, ab
 from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField, BooleanField, DateField
-from wtforms.validators import DataRequired, Regexp, Optional, ValidationError
+from wtforms.validators import DataRequired, Required, Regexp, Optional, ValidationError
 from sqlalchemy    import func
 from flaskr        import db
 from flaskr.models import Person,WorkRec
@@ -20,6 +20,17 @@ class Unique(object):
         check = self.model.query.filter(self.field == field.data).first()
         if check:
             raise ValidationError(self.message)
+
+class RequiredIf(Required):
+    def __init__(self, other_field_name, *args, **kwargs):
+        self.other_field_name = other_field_name
+        super(RequiredIf, self).__init__(*args, **kwargs)
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        if bool(other_field.data):
+            super(RequiredIf, self).__call__(form, field)
 
 class PersonForm(FlaskForm):
     name = StringField('名前', validators=[
