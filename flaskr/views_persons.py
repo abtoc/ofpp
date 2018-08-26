@@ -3,13 +3,23 @@ from flask         import request, redirect, url_for, render_template, flash, ab
 from flask_login   import login_required
 from flask_wtf     import FlaskForm
 from wtforms       import StringField, BooleanField, DateField
-from wtforms.validators import DataRequired, Regexp, Optional
+from wtforms.validators import DataRequired, Regexp, Optional, ValidationError
 from sqlalchemy    import func
 from flaskr        import db
 from flaskr.models import Person,WorkRec
 from sqlalchemy.exc import IntegrityError
 
 bp = Blueprint('persons', __name__, url_prefix="/persons")
+
+class Unique(object):
+    def __init__(self, model, field, message='This element already exists.'):
+        self.model   = model
+        self.field   = field
+        self.message = message
+    def __call__(self, form, field):
+        check = self.model.query.filter(self.field == field.data).first()
+        if check:
+            raise ValidationError(self.message)
 
 class PersonForm(FlaskForm):
     name = StringField('名前', validators=[
@@ -18,7 +28,10 @@ class PersonForm(FlaskForm):
     display = StringField('表示名', validators=[
             DataRequired(message='必須入力です')
         ])
-    idm    = StringField('IDM')
+    idm    = StringField('IDM',
+        validators=[
+            Unique(Person, Person.idm, message='同一IDMが指定されています')
+        ])
     enabled = BooleanField('有効化', default='checked')
     staff   = BooleanField('職員')
     number  = StringField('受給者番号',
