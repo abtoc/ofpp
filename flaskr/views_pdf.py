@@ -299,7 +299,7 @@ def make_pdf(head, items, foot):
     colw=(71.3*mm,17.1*mm,16.0*mm,14.0*mm,8.6*mm,13.6*mm,9.0*mm,34.5*mm)
     data=[
         ['合計','{}時間'.format(foot['sum']),'回','回','回','施設外\n就労','当月','日      '],
-        ['','','','','','','累計','日      ']
+        ['','','','','','','累計','日/180日']
     ]
     table = Table(data, colWidths=colw, rowHeights=4.0*mm)
     table.setStyle([

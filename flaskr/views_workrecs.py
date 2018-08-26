@@ -110,7 +110,7 @@ def index(id,yymm=None):
             item['value']    = workrec.value
             item['reson']    = workrec.reason
             item['creation'] = False
-            if (workrec.value != None) and (workrec.value != 0.0):
+            if workrec.value != None:
                 foot['sum']      = foot['sum'] + workrec.value;
                 foot['count']    = foot['count'] + 1
         items.append(item)
@@ -136,21 +136,7 @@ def create(id,yymm,dd):
         form = WorkRecEditForm()
     if form.validate_on_submit():
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
-        form.populate_obj(workrec)
-        if (workrec.situation is not None) and (len(workrec.situation) == 0):
-            workrec.situation = None
-        if (workrec.work_in is not None) and (len(workrec.work_in) == 0):
-            workrec.work_in = None
-        if (workrec.work_out is not None) and (len(workrec.work_out) == 0):
-            workrec.work_out = None
-        if (workrec.value is not None) and (len(workrec.value) == 0):
-            workrec.value = None
-        if (workrec.break_t is not None) and (len(workrec.break_t) == 0):
-            workrec.break_t = None
-        if (workrec.over_t is not None) and (len(workrec.over_t) == 0):
-            workrec.over_t = None
-        if (workrec.reason is not None) and (len(workrec.reason) == 0):
-            workrec.reason = None
+        workrec.populate_form(form)
         db.session.add(workrec)
         try:
             db.session.commit()
@@ -176,21 +162,7 @@ def edit(id,yymm,dd):
     else:
         form = WorkRecEditForm(obj=workrec)
     if form.validate_on_submit():
-        form.populate_obj(workrec)
-        if (workrec.situation is not None) and (len(workrec.situation) == 0):
-            workrec.situation = None
-        if (workrec.work_in is not None) and (len(workrec.work_in) == 0):
-            workrec.work_in = None
-        if (workrec.work_out is not None) and (len(workrec.work_out) == 0):
-            workrec.work_out = None
-        if (workrec.value is not None) and (len(workrec.value) == 0):
-            workrec.value = None
-        if (workrec.break_t is not None) and (len(workrec.break_t) == 0):
-            workrec.break_t = None
-        if (workrec.over_t is not None) and (len(workrec.over_t) == 0):
-            workrec.over_t = None
-        if (workrec.reason is not None) and (len(workrec.reason) == 0):
-            workrec.reason = None
+        workrec.populate_form(form)
         db.session.add(workrec)
         try:
             db.session.commit()

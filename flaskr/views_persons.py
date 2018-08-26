@@ -46,11 +46,7 @@ def create():
     form = PersonForm()
     if form.validate_on_submit():
         person = Person()
-        form.populate_obj(person)
-        if person.idm == '':
-            person.idm = None
-        if person.usestart == '':
-            person.usestart = None
+        person.populate_form(form)
         db.session.add(person)
         try:
           db.session.commit()
@@ -72,11 +68,7 @@ def edit(id):
       abort(404)
     form = PersonForm(obj=person)
     if form.validate_on_submit():
-        form.populate_obj(person)
-        if person.idm == '':
-            person.idm = None
-        if person.usestart == '':
-            person.usestart = None
+        person.populate_form(form)
         db.session.add(person)
         try:
           db.session.commit()

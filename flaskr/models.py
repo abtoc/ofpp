@@ -26,6 +26,12 @@ class Person(db.Model):
     usestart  = db.Column(db.Date,       nullable=True)
     create_at = db.Column(db.DateTime,   default =_get_now)
     update_at = db.Column(db.DateTime,   onupdate=_get_now)
+    def populate_form(self,form):
+        form.populate_obj(self)
+        if self.idm == '':
+            self.idm = None
+        if self.usestart == '':
+            self.usestart = None
     def __repr__(self):
         return '<Person id={id},name={name},idm={idm}>'.format(
             id=self.id, name=self.name, idm=self.idm
@@ -49,6 +55,22 @@ class WorkRec(db.Model):
     reason    = db.Column(db.String(128))
     create_at = db.Column(db.DateTime,   default =_get_now)
     update_at = db.Column(db.DateTime,   onupdate=_get_now)
+    def populate_form(self,form):
+        form.populate_obj(self)
+        if (self.situation is not None) and (len(self.situation) == 0):
+            self.situation = None
+        if (self.work_in is not None) and (len(self.work_in) == 0):
+            self.work_in = None
+        if (self.work_out is not None) and (len(self.work_out) == 0):
+            self.work_out = None
+        if (self.value is not None) and (len(self.value) == 0):
+            self.value = None
+        if (self.break_t is not None) and (len(self.break_t) == 0):
+            self.break_t = None
+        if (self.over_t is not None) and (len(self.over_t) == 0):
+            self.over_t = None
+        if (self.reason is not None) and (len(self.reason) == 0):
+            self.reason = None
     def __repr__(self):
         return '<WorkRec id={id},yymm={yymm},dd={dd},in={work_in},out={work_out},val={val}>'.format(
             id=self.person_id, yymm=self.yymm, dd=self.dd, work_in=self.work_in, work_out=self.work_out, val=self.value
