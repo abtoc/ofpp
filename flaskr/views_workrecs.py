@@ -11,7 +11,7 @@ from flaskr.models import Person,WorkRec
 
 bp = Blueprint('workrecs', __name__, url_prefix="/workrecs")
 
-class WorkRecEditForm(FlaskForm):
+class WorkRecForm(FlaskForm):
     situation = StringField('状況')
     work_in  = StringField('開始時刻', 
         validators=[
@@ -133,7 +133,7 @@ def create(id,yymm,dd):
     if idm != person.idm:
         form = WorkRecAbsenceForm()
     else:
-        form = WorkRecEditForm()
+        form = WorkRecForm()
     if form.validate_on_submit():
         workrec = WorkRec(person_id=id, yymm=yymm, dd=dd)
         workrec.populate_form(form)
@@ -160,7 +160,7 @@ def edit(id,yymm,dd):
     if idm != person.idm:
         form = WorkRecAbsenceForm(obj=workrec)
     else:
-        form = WorkRecEditForm(obj=workrec)
+        form = WorkRecForm(obj=workrec)
     if form.validate_on_submit():
         workrec.populate_form(form)
         db.session.add(workrec)
