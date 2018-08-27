@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired, Required, Regexp, Optional, Validat
 from sqlalchemy    import func
 from flaskr        import db
 from flaskr.models import Person,WorkRec
-from flaskr.validators import RequiredIf
+from flaskr.validators import RequiredNotIf, RegexpNotIf
 from sqlalchemy.exc import IntegrityError
 
 bp = Blueprint('persons', __name__, url_prefix="/persons")
@@ -39,11 +39,11 @@ class PersonForm(FlaskForm):
     staff   = BooleanField('職員')
     number  = StringField('受給者番号',
         validators=[
-            Regexp(message='数字10桁で入力してください',regex='^[0-9]{10}$')
+            RegexpNotIf('staff', message='数字10桁で入力してください',regex='^[0-9]{10}$')
         ])
     amount  = StringField('契約支給量',
         validators=[
-            DataRequired(message='入力必須です')
+            RequiredNotIf('staff', message='入力必須です')
         ])
     usestart = DateField('利用開始日(YYYY-MM-DDで入力してください)',
         validators=[

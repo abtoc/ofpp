@@ -1,5 +1,6 @@
 
-from wtforms.validators import Required, ValidationError
+from re import match
+from wtforms.validators import Required, Regexp, ValidationError
 
 class Unique(object):
     def __init__(self, model, field, message='This element already exists.'):
@@ -11,14 +12,24 @@ class Unique(object):
         if check:
             raise ValidationError(self.message)
 
-class RequiredIf(Required):
+class RequiredNotIf(Required):
     def __init__(self, other_field_name, *args, **kwargs):
         self.other_field_name = other_field_name
-        super(RequiredIf, self).__init__(*args, **kwargs)
+        super(RequiredNotIf, self).__init__(*args, **kwargs)
     def __call__(self, form, field):
         other_field = form._fields.get(self.other_field_name)
         if other_field is None:
             raise Exception('no field named "%s" in form' % self.other_field_name)
-        if bool(other_field.data):
-            super(RequiredIf, self).__call__(form, field)
+        if not bool(other_field.data):
+            super(RequiredNotIf, self).__call__(form, field)
 
+class RegexpNotIf(Regexp):
+    def __init__(self, other_field_name, *args, **kwargs):
+        self.other_field_name = other_field_name
+        super(RegexpNotIf, self).__init__(*args, **kwargs)
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        if not bool(other_field.data):
+            super(RegexpNotIf, self).__call__(form, field)
