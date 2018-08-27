@@ -2,25 +2,39 @@ from flask         import Blueprint
 from flask         import request, redirect, url_for, render_template, flash, abort
 from flask_login   import login_required
 from flask_wtf     import FlaskForm
-from wtforms       import StringField, BooleanField, DateField
+from wtforms       import StringField, BooleanField, DateField, HiddenField
 from wtforms.validators import DataRequired, Required, Regexp, Optional, ValidationError
 from sqlalchemy    import func
 from flaskr        import db
 from flaskr.models import Person,WorkRec
-from flaskr.validators import Unique, RequiredIf
+from flaskr.validators import RequiredIf
 from sqlalchemy.exc import IntegrityError
 
 bp = Blueprint('persons', __name__, url_prefix="/persons")
 
+class UniqueIDM(object):
+    def __init__(self, message='This element already exists.'):
+        self.message = message
+    def __call__(self, form, field):
+        id = form._fields.get('id')
+        if id is None:
+            raise Exception('no field named "id" in form')
+        check = Person.query.filter(Person.idm == field.data, Person.id != id.data).first()
+        if check:
+            raise ValidationError(self.message)
 
 class PersonForm(FlaskForm):
+    id   = HiddenField('id')
     name = StringField('名前', validators=[
             DataRequired(message='必須入力です')
         ])
     display = StringField('表示名', validators=[
             DataRequired(message='必須入力です')
         ])
-    idm    = StringField('IDM')
+    idm    = StringField('IDM',
+        validators=[
+            UniqueIDM(message='同一IDMが指定されています')
+        ])
     enabled = BooleanField('有効化', default='checked')
     staff   = BooleanField('職員')
     number  = StringField('受給者番号',

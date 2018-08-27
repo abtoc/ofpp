@@ -1,6 +1,6 @@
 mixin generate_fields(form)
     for field in form
-        if field.type != 'CSRFTokenField'
+        if (field.type != 'CSRFTokenField') and (field.type != 'HiddenField')
             if field.errors
                 .form-group.has-error {{ field.label }}
                     if field.type in ('StringField', 'PasswordField', 'TextAreaField',"DecimalField","DateField")

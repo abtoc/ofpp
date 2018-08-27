@@ -28,6 +28,8 @@ class Person(db.Model):
     update_at = db.Column(db.DateTime,   onupdate=_get_now)
     def populate_form(self,form):
         form.populate_obj(self)
+        if self.id == '':
+            self.id = None
         if self.idm == '':
             self.idm = None
         if self.usestart == '':
