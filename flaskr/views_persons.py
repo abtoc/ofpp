@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 
 bp = Blueprint('persons', __name__, url_prefix="/persons")
 
+
 class PersonForm(FlaskForm):
     name = StringField('名前', validators=[
             DataRequired(message='必須入力です')
@@ -19,10 +20,7 @@ class PersonForm(FlaskForm):
     display = StringField('表示名', validators=[
             DataRequired(message='必須入力です')
         ])
-    idm    = StringField('IDM',
-        validators=[
-            Unique(Person, Person.idm, message='同一IDMが指定されています')
-        ])
+    idm    = StringField('IDM')
     enabled = BooleanField('有効化', default='checked')
     staff   = BooleanField('職員')
     number  = StringField('受給者番号',
