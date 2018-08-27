@@ -16,6 +16,8 @@ class UniqueIDM(object):
     def __init__(self, message='This element already exists.'):
         self.message = message
     def __call__(self, form, field):
+        if len(field.data) == 0:
+            return
         id = form._fields.get('id')
         if id is None:
             raise Exception('no field named "id" in form')

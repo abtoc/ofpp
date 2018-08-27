@@ -21,8 +21,8 @@ class Person(db.Model):
     idm       = db.Column(db.String(16), unique=True)
     enabled   = db.Column(db.Boolean,    nullable=False)
     staff     = db.Column(db.Boolean,    nullable=False)
-    number    = db.Column(db.String(10), nullable=False)
-    amount    = db.Column(db.String(64), nullable=False)
+    number    = db.Column(db.String(10), nullable=True)
+    amount    = db.Column(db.String(64), nullable=True)
     usestart  = db.Column(db.Date,       nullable=True)
     create_at = db.Column(db.DateTime,   default =_get_now)
     update_at = db.Column(db.DateTime,   onupdate=_get_now)
@@ -32,6 +32,10 @@ class Person(db.Model):
             self.id = None
         if self.idm == '':
             self.idm = None
+        if self.number == '':
+            self.number = None
+        if self.amount == '':
+            self.amount = None
         if self.usestart == '':
             self.usestart = None
     def __repr__(self):
