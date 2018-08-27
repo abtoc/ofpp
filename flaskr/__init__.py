@@ -25,7 +25,6 @@ cache = SimpleCache()
 
 scheduler = APScheduler()
 scheduler.init_app(app)
-#scheduler.start()
 
 import flaskr.views
 import flaskr.models

@@ -20,3 +20,4 @@ scheduler.add_job(
     minute=34,
     second=0
 )
+scheduler.start()
