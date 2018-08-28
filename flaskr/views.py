@@ -1,4 +1,5 @@
 from datetime      import date
+from dateutil.relativedelta import relativedelta
 from flask         import request, redirect, url_for, render_template, flash
 from flaskr        import app,db
 from flaskr.models import Person, WorkRec
@@ -6,6 +7,7 @@ from flaskr.models import Person, WorkRec
 @app.route('/')
 def index():
     today = date.today()
+    yesterday =  today - relativedelta(days=1)
     persons = Person.query.filter_by(enabled=True).order_by(Person.name.desc()).all()
     items = []
     for person in persons:
@@ -24,6 +26,18 @@ def index():
                 item['work_out'] = workrec.work_out
             elif workrec.reason is not None:
                 item['work_out'] = workrec.reason
+        workrec = WorkRec.get_date(person.id, yesterday)
+        item['work_in_1'] = ''
+        item['work_out_1'] = ''
+        if workrec is not None:
+            if workrec.work_in is not None:
+                item['work_in_1'] = workrec.work_in
+            elif workrec.situation is not None:
+                item['work_in_1'] = workrec.situation
+            if workrec.work_out is not None:
+                item['work_out_1'] = workrec.work_out
+            elif workrec.reason is not None:
+                item['work_out_1'] = workrec.reason
         items.append(item)
     return render_template('index.pug', items=items)
     #return redirect(url_for('persons.index'))
