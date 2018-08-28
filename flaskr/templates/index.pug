@@ -7,11 +7,17 @@ block content
         thead
             tr
                 th 名前
+                th(colspan="2") 本日
+                th(colspan="2") 昨日
                 td
         tbody
-            for person in persons
+            for item in items
                 tr
-                    td= person.display
+                    td= item['name']
+                    td= item['work_in']
+                    td= item['work_out']
+                    td= item['work_in_1']
+                    td= item['work_out_1']
                     td
                         .row
-                            a.btn.btn-info.pull-right(href="{{ url_for('workrecs.index',id=person.id) }}") 出退勤簿
+                            a.btn.btn-info.pull-right(href="{{ url_for('workrecs.index',id=item['id']) }}") 出退勤簿

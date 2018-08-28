@@ -81,7 +81,7 @@ def create():
 @bp.route('/<id>/edit', methods=('GET','POST'))
 @login_required
 def edit(id):
-    person = Person.query.filter_by(id=id).first()
+    person = Person.get(id)
     if person is None:
       abort(404)
     form = PersonForm(obj=person)
@@ -103,7 +103,7 @@ def edit(id):
 @bp.route('/<id>/destroy')
 @login_required
 def destroy(id):
-    person = Person.query.filter_by(id=id).first()
+    person = Person.get(id)
     if person is None:
       abort(404)
     q=db.session.\
