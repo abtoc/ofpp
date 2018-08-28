@@ -18,7 +18,7 @@ pdfmetrics.registerFont(TTFont('Gothic','flaskr/fonts/fonts-japanese-gothic.ttf'
 bp = Blueprint('pdf', __name__, url_prefix="/pdf")
 
 def make_head(id,yymm):
-    person = Person.query.filter_by(id=id).first()
+    person = Person.get(id)
     if person == None:
         return None
 
@@ -71,7 +71,7 @@ def make_items(id,yymm,staff):
         item = {}
         item['dd'] = first.day
         item['ww'] = weeka[first.weekday()]
-        workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
+        workrec = WorkRec.get_date(id, first)
         if workrec is None:
             item['stat'] = '－'
         elif (not staff) and (workrec.value is not None) and (count >= last):

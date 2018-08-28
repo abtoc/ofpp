@@ -69,7 +69,7 @@ def _check_yymmdd(yymm, dd=1):
 def index(id,yymm=None):
     if (yymm is not None) and (not _check_yymmdd(yymm)):
         abort(400)
-    person   = Person.query.filter_by(id=id).first()
+    person   = Person.get(id)
     if person is None:
         abort(404)
     if yymm is None:
@@ -102,7 +102,7 @@ def index(id,yymm=None):
             reson=None,
             creation=True
         )
-        workrec = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=first.day).first()
+        workrec = WorkRec.get_date(id, first)
         if workrec != None:
             item['situation'] = workrec.situation
             item['work_in']  = workrec.work_in
@@ -126,7 +126,7 @@ def index(id,yymm=None):
 def create(id,yymm,dd):
     if (not _check_yymmdd(yymm,dd=dd)):
         abort(400)
-    person   = Person.query.filter_by(id=id).first()
+    person   = Person.get(id)
     if person is None:
         abort(404)
     idm      = cache.get('idm')
@@ -150,10 +150,10 @@ def create(id,yymm,dd):
 @bp.route('/<id>/<yymm>/<dd>/edit', methods=('GET','POST'))
 @login_required
 def edit(id,yymm,dd):
-    person   = Person.query.filter_by(id=id).first()
+    person   = Person.get(id)
     if person is None:
         abort(404)
-    workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm,dd=dd).first()
+    workrec  = WorkRec.get(id, yymm, dd)
     if workrec is None:
         abort(404)
     idm      = cache.get('idm')
@@ -176,11 +176,11 @@ def edit(id,yymm,dd):
 @bp.route('/<id>/<yymm>/<dd>/destroy')
 @login_required
 def destroy(id,yymm,dd):
-    person   = Person.query.filter_by(id=id).first()
+    person   = Person.get(id)
     if person is None:
         abort(404)
     idm      = cache.get('idm')
-    workrec  = WorkRec.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()
+    workrec  = WorkRec.get(id, yymm, dd)
     if (idm != person.idm) and ((workrec is not None) and (workrec.work_in is not None)):
         flash('利用者のICカードをタッチしてください', 'danger')
     if (workrec is not None) and ((idm == person.idm) or (workrec.work_in is None)):

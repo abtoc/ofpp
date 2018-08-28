@@ -34,6 +34,9 @@ class Person(db.Model):
             self.idm = None
         if self.usestart == '':
             self.usestart = None
+    @classmethod
+    def get(cls,id):
+        return cls.query.filter_by(id=id).first()  
     def __repr__(self):
         return '<Person id={id},name={name},idm={idm}>'.format(
             id=self.id, name=self.name, idm=self.idm
@@ -57,6 +60,13 @@ class WorkRec(db.Model):
     reason    = db.Column(db.String(128))
     create_at = db.Column(db.DateTime,   default =_get_now)
     update_at = db.Column(db.DateTime,   onupdate=_get_now)
+    @classmethod
+    def get(cls,id,yymm, dd):
+        return cls.query.filter_by(person_id=id, yymm=yymm, dd=dd).first()  
+    @classmethod
+    def get_date(cls,id,yymmdd):
+        yymm = yymmdd.strftime('%Y%m')
+        return cls.query.filter_by(person_id=id, yymm=yymm, dd=yymmdd.day).first()  
     def populate_form(self,form):
         form.populate_obj(self)
         if (self.situation is not None) and (len(self.situation) == 0):
