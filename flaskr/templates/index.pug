@@ -8,7 +8,7 @@ block content
             tr
                 th 名前
                 th(colspan="2") 本日
-                th(colspan="2") 昨日
+                th(colspan="2") 昨日(または土曜日)
                 td
         tbody
             for item in items
@@ -20,4 +20,6 @@ block content
                     td= item['work_out_1']
                     td
                         .row
-                            a.btn.btn-info.pull-right(href="{{ url_for('workrecs.index',id=item['id']) }}") 出退勤簿
+                            .btn-group
+                                a.btn.btn-info(href="{{ url_for('workrecs.index',id=item['id']) }}") 出退勤簿
+                                a.btn.btn-info(href="{{ url_for('pdf.print_pdf',id=item['id'], yymm=yymm) }}" target="_blank") 前月実績表
