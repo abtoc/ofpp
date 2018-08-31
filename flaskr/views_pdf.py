@@ -296,29 +296,30 @@ def make_pdf(head, items, foot):
     table.wrapOn(p, xmargin, 32.0*mm)
     table.drawOn(p, xmargin, 32.0*mm)
     # Footer
-    colw=(71.3*mm,17.1*mm,16.0*mm,14.0*mm,8.6*mm,13.6*mm,9.0*mm,34.5*mm)
+    colw=(54.1*mm,17.1*mm,17.1*mm,16.0*mm,14.0*mm,8.6*mm,13.6*mm,9.0*mm,34.5*mm)
     data=[
-        ['合計','{}時間'.format(foot['sum']),'回','回','回','施設外\n就労','当月','日      '],
-        ['','','','','','','累計','日/180日']
+        ['合計','{}日'.format(foot['cnt']),'{}時間'.format(foot['sum']),'回','回','回','施設外\n就労','当月','日      '],
+        ['','','','','','','','累計','日/180日']
     ]
     table = Table(data, colWidths=colw, rowHeights=4.0*mm)
     table.setStyle([
         ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 8),
-        ('FONT',   ( 1, 0), ( 4,-1), 'Gothic', 6),
-        ('FONT',   ( 6, 0), ( 6,-1), 'Gothic', 6),
+        ('FONT',   ( 2, 0), ( 5,-1), 'Gothic', 6),
+        ('FONT',   ( 7, 0), ( 7,-1), 'Gothic', 6),
         ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
         ('BOX',    ( 0, 0), (-1,-1), 1.8, colors.black),
         ('VALIGN', ( 0, 0), (-1,-1), 'MIDDLE'),
         ('ALIGN',  ( 0, 0), ( 0,-1), 'CENTER'),
-        ('ALIGN',  ( 1, 0), ( 4,-1), 'RIGHT'),
-        ('ALIGN',  ( 5, 0), ( 6,-1), 'CENTER'),
-        ('ALIGN',  ( 7, 0), ( 7,-1), 'RIGHT'),
+        ('ALIGN',  ( 1, 0), ( 5,-1), 'RIGHT'),
+        ('ALIGN',  ( 6, 0), ( 7,-1), 'CENTER'),
+        ('ALIGN',  ( 8, 0), ( 8,-1), 'RIGHT'),
         ('SPAN',   ( 0, 0), ( 0, 1)),
         ('SPAN',   ( 1, 0), ( 1, 1)),
         ('SPAN',   ( 2, 0), ( 2, 1)),
         ('SPAN',   ( 3, 0), ( 3, 1)),
         ('SPAN',   ( 4, 0), ( 4, 1)),
-        ('SPAN',   ( 5, 0), ( 5, 1))
+        ('SPAN',   ( 5, 0), ( 5, 1)),
+        ('SPAN',   ( 6, 0), ( 6, 1))
     ])
     table.wrapOn(p, xmargin, 23.2*mm)
     table.drawOn(p, xmargin, 23.2*mm)
