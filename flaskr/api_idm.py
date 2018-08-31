@@ -3,6 +3,7 @@ from flask         import request, jsonify
 from flaskr        import db, cache, auth
 from flaskr.models import Person, WorkRec, User
 from flaskr.workrule import *
+from flaskr.worker import enabled_workrec
 from datetime      import datetime
 import json
 
@@ -62,14 +63,11 @@ def post_idm(idm):
     yymm=now.strftime('%Y%m')
     dd=now.day
     hhmm=now.strftime('%H:%M')
-    workrec=WorkRec.query.filter_by(
-        person_id=person.id, yymm=yymm, dd=dd
-    ).first()
+    workrec=WorkRec.get(person.id, yymm, dd)
     creation=False
     if workrec is None:
         creation = True
         work_in = get_work_in(hhmm, person.staff)
-        #workrec = WorkRec(person_id=person.id, yymm=yymm,dd=dd, work_in=work_in['caption'])
         workrec = WorkRec(person_id=person.id, yymm=yymm,dd=dd, work_in=hhmm)
     else:
         work_in  = get_work_in(workrec.work_in, person.staff)
@@ -91,6 +89,7 @@ def post_idm(idm):
     db.session.add(workrec)
     try:
         db.session.commit()
+        enabled_workrec.delay(person.id, yymm)
     except:
         db.session.rollback()
         return jsonify({}), 500

@@ -65,6 +65,7 @@ def make_items(id,yymm,staff):
         cnt = 0
     )
     for dd in range(1,32):
+        item_add = False
         if mm != first.month:
             items.append(None)
             continue
@@ -77,6 +78,7 @@ def make_items(id,yymm,staff):
         elif (not staff) and (workrec.value is not None) and (count >= last):
             item['stat'] = '－'
         else:
+            item_add = True
             if (workrec.situation is not None) and (len(workrec.situation) > 0):
                 item["stat"] = workrec.situation
             elif workrec.value is None:
@@ -97,7 +99,7 @@ def make_items(id,yymm,staff):
                 foot['over']   = foot['over'] + workrec.over_t
         if staff:
             items.append(item)
-        elif workrec is not None:
+        elif (workrec is not None) and (item_add):
             items.append(item)
         first = first + relativedelta(days=1)
     if staff:

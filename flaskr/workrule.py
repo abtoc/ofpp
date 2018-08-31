@@ -12,11 +12,11 @@ work_rules_staff = (
     dict(caption = '14:30', start_time = '14:15', end_time = '14:45', work_in = True,  work_out = True,  value = 14.5),
     dict(caption = '15:00', start_time = '14:45', end_time = '15:15', work_in = True,  work_out = True,  value = 15.0),
     dict(caption = '15:30', start_time = '15:15', end_time = '15:45', work_in = True,  work_out = True,	 value = 15.5),
-    dict(caption = '16:00', start_time = '15:45', end_time = '16:15', work_in = False, work_out = True,  value = 16.0),
-    dict(caption = '16:30', start_time = '16:15', end_time = '16:45', work_in = False, work_out = True,  value = 16.5),
-    dict(caption = '17:00', start_time = '16:45', end_time = '17:15', work_in = False, work_out = True,  value = 17.0),
-    dict(caption = '17:30', start_time = '16:45', end_time = '17:45', work_in = False, work_out = True,  value = 17.5),
-    dict(caption = '18:00', start_time = '17:45', end_time = '23:59', work_in = False, work_out = True,  value = 18.0)
+    dict(caption = '16:00', start_time = '15:45', end_time = '16:15', work_in = True,  work_out = True,  value = 16.0),
+    dict(caption = '16:30', start_time = '16:15', end_time = '16:45', work_in = True,  work_out = True,  value = 16.5),
+    dict(caption = '17:00', start_time = '16:45', end_time = '17:15', work_in = True,  work_out = True,  value = 17.0),
+    dict(caption = '17:30', start_time = '16:45', end_time = '17:45', work_in = True,  work_out = True,  value = 17.5),
+    dict(caption = '18:00', start_time = '17:45', end_time = '23:59', work_in = True,  work_out = True,  value = 18.0)
 )
 work_rules_staff_no = (
     dict(caption = '10:00', start_time = '00:00', end_time = '10:15', work_in = True,  work_out = True,  value = 10.0),
@@ -28,5 +28,5 @@ work_rules_staff_no = (
     dict(caption = '13:30', start_time = '13:15', end_time = '13:45', work_in = True,  work_out = True,  value = 13.5),
     dict(caption = '14:00', start_time = '13:45', end_time = '14:15', work_in = True,  work_out = True,  value = 14.0),
     dict(caption = '14:30', start_time = '14:15', end_time = '14:45', work_in = True,  work_out = True,  value = 14.5),
-    dict(caption = '15:00', start_time = '14:45', end_time = '23:59', work_in = False, work_out = True,  value = 15.0)
+    dict(caption = '15:00', start_time = '14:45', end_time = '23:59', work_in = True,  work_out = True,  value = 15.0)
 )

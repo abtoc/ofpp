@@ -8,6 +8,7 @@ from wtforms       import StringField,DecimalField
 from wtforms.validators import DataRequired, Regexp
 from flaskr        import db, weeka, cache
 from flaskr.models import Person,WorkRec
+from flaskr.worker import enabled_workrec
 
 bp = Blueprint('workrecs', __name__, url_prefix="/workrecs")
 
@@ -100,6 +101,7 @@ def index(id,yymm=None):
             work_out=None,
             value=None,
             reson=None,
+            enabled=None,
             creation=True
         )
         workrec = WorkRec.get_date(id, first)
@@ -109,6 +111,7 @@ def index(id,yymm=None):
             item['work_out'] = workrec.work_out
             item['value']    = workrec.value
             item['reson']    = workrec.reason
+            item['enabled']  = workrec.enabled
             item['creation'] = False
             if workrec.value != None:
                 foot['sum']      = foot['sum'] + workrec.value;
@@ -140,6 +143,7 @@ def create(id,yymm,dd):
         db.session.add(workrec)
         try:
             db.session.commit()
+            enabled_workrec.delay(id, yymm)
             flash('WorkRec saved successfully.', 'success')
             return redirect(url_for('workrecs.index',id=id,yymm=yymm))
         except:
@@ -166,6 +170,7 @@ def edit(id,yymm,dd):
         db.session.add(workrec)
         try:
             db.session.commit()
+            enabled_workrec.delay(id, yymm)
             flash('WorkRec saved successfully.', 'success')
             return redirect(url_for('workrecs.index',id=id,yymm=yymm))
         except:
@@ -187,6 +192,7 @@ def destroy(id,yymm,dd):
         db.session.delete(workrec)
         try:
             db.session.commit()
+            enabled_workrec.delay(id, yymm)
             flash('Entry delete successfully.', 'success')
         except:
             db.session.rollback()

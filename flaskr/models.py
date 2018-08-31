@@ -50,6 +50,7 @@ class WorkRec(db.Model):
     __tablename__ = 'workrecs'
     __table_args__ = (
         (db.UniqueConstraint('yymm', 'dd', 'person_id', name='idx_yymm_dd_id')),
+        (db.Index('yymm', 'enabled')),
         {'mysql_engine': 'InnoDB'}
     )
     person_id = db.Column(db.String(36), db.ForeignKey('persons.id'), primary_key=True)
@@ -62,6 +63,7 @@ class WorkRec(db.Model):
     break_t   = db.Column(db.Float)
     over_t    = db.Column(db.Float)
     reason    = db.Column(db.String(128))
+    enabled   = db.Column(db.Boolean,    nullable=True)
     create_at = db.Column(db.DateTime,   default =_get_now)
     update_at = db.Column(db.DateTime,   onupdate=_get_now)
     @classmethod
@@ -70,7 +72,10 @@ class WorkRec(db.Model):
     @classmethod
     def get_date(cls,id,yymmdd):
         yymm = yymmdd.strftime('%Y%m')
-        return cls.query.filter_by(person_id=id, yymm=yymm, dd=yymmdd.day).first()  
+        return cls.query.filter_by(person_id=id, yymm=yymm, dd=yymmdd.day).first() 
+    @classmethod
+    def get_yymm(cls,id,yymm):
+        return cls.query.filter_by(person_id=id, yymm=yymm).all() 
     def populate_form(self,form):
         form.populate_obj(self)
         if (self.situation is not None) and (len(self.situation) == 0):

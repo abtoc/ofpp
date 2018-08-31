@@ -20,6 +20,7 @@ block content
             tr
                 th: .text-right 日
                 th: .text-center 曜日
+                td
                 th: .text-center 状況
                 th: .text-center 開始時刻
                 th: .text-center 終了時刻
@@ -31,6 +32,12 @@ block content
                 tr
                     td: .text-right= item["dd"]
                     td: .text-center= item['week']
+                    if item['enabled'] == None:
+                        td
+                    elif item['enabled']:
+                        td ○
+                    else
+                        td ×
                     if item['situation'] == None:
                         td
                     else

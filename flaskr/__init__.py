@@ -4,8 +4,24 @@ from flask_sqlalchemy  import SQLAlchemy
 from flask_apscheduler import APScheduler
 from flask_httpauth    import HTTPBasicAuth
 from werkzeug.contrib.cache import SimpleCache
+from celery            import Celery
 #import locale
 #locale.setlocale(locale.LC_TIME, 'ja_JP.UTF-8')
+
+def make_celery(app):
+    celery = Celery(
+        app.import_name,
+        backend=app.config['CELERY_RESULT_BACKEND'],
+        broker=app.config['CELERY_BROKER_URL']
+    )
+    celery.conf.update(app.config)
+    class ContextTask(celery.Task):
+        abstract = True
+        def __call__(self, *args, **kwarg):
+            with app.app_context():
+                return self.run(*args, **kwarg)
+    celery.Task = ContextTask
+    return celery
 
 weeka=('月', '火', '水', '木', '金', '土', '日')
 
@@ -25,6 +41,8 @@ cache = SimpleCache()
 
 scheduler = APScheduler()
 scheduler.init_app(app)
+
+celery = make_celery(app)
 
 import flaskr.views
 import flaskr.models
