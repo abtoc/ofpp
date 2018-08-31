@@ -7,6 +7,7 @@ from flaskr.models import Person, WorkRec
 @app.route('/')
 def index():
     today = date.today()
+    yymm = today.strftime('%Y%m')
     yesterday =  today - relativedelta(days=1)
     if yesterday.weekday() == 6:
         yesterday =  today - relativedelta(days=1)
@@ -43,7 +44,7 @@ def index():
             elif workrec.reason is not None:
                 item['work_out_1'] = workrec.reason
         items.append(item)
-    return render_template('index.pug', items=items, yymm=yymm_1)
+    return render_template('index.pug', items=items, yymm=yymm, yymm_1=yymm_1)
     #return redirect(url_for('persons.index'))
 
 @app.after_request
