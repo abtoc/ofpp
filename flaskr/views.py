@@ -13,7 +13,7 @@ def index():
         yesterday =  today - relativedelta(days=1)
     prevm = today - relativedelta(months=1)
     yymm_1 = prevm.strftime('%Y%m')
-    persons = Person.query.filter_by(enabled=True).order_by(Person.name.desc()).all()
+    persons = Person.query.filter_by(enabled=True).order_by(Person.staff.asc(),Person.name.desc()).all()
     items = []
     for person in persons:
         item = {}
