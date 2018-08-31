@@ -22,4 +22,5 @@ block content
                         .row
                             .btn-group
                                 a.btn.btn-info(href="{{ url_for('workrecs.index',id=item['id']) }}") 出退勤簿
-                                a.btn.btn-info(href="{{ url_for('pdf.print_pdf',id=item['id'], yymm=yymm) }}" target="_blank") 前月実績表
+                                a.btn.btn-info(href="{{ url_for('pdf.print_pdf',id=item['id'], yymm=yymm) }}" target="_blank") 当月実績表
+                                a.btn.btn-info(href="{{ url_for('pdf.print_pdf',id=item['id'], yymm=yymm_1) }}" target="_blank") 前月実績表

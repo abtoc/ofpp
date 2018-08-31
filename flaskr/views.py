@@ -7,12 +7,13 @@ from flaskr.models import Person, WorkRec
 @app.route('/')
 def index():
     today = date.today()
+    yymm = today.strftime('%Y%m')
     yesterday =  today - relativedelta(days=1)
     if yesterday.weekday() == 6:
         yesterday =  today - relativedelta(days=1)
     prevm = today - relativedelta(months=1)
     yymm_1 = prevm.strftime('%Y%m')
-    persons = Person.query.filter_by(enabled=True).order_by(Person.name.desc()).all()
+    persons = Person.query.filter_by(enabled=True).order_by(Person.staff.asc(),Person.name.desc()).all()
     items = []
     for person in persons:
         item = {}
@@ -43,7 +44,7 @@ def index():
             elif workrec.reason is not None:
                 item['work_out_1'] = workrec.reason
         items.append(item)
-    return render_template('index.pug', items=items, yymm=yymm_1)
+    return render_template('index.pug', items=items, yymm=yymm, yymm_1=yymm_1)
     #return redirect(url_for('persons.index'))
 
 @app.after_request
