@@ -97,7 +97,7 @@ def make_items(id,yymm,staff):
                 foot['over']   = foot['over'] + workrec.over_t
         if staff:
             items.append(item)
-        elif first.weekday() != 6:
+        elif workrec is not None:
             items.append(item)
         first = first + relativedelta(days=1)
     if staff:
@@ -304,7 +304,7 @@ def make_pdf(head, items, foot):
     table = Table(data, colWidths=colw, rowHeights=4.0*mm)
     table.setStyle([
         ('FONT',   ( 0, 0), (-1,-1), 'Gothic', 8),
-        ('FONT',   ( 2, 0), ( 5,-1), 'Gothic', 6),
+        ('FONT',   ( 1, 0), ( 5,-1), 'Gothic', 6),
         ('FONT',   ( 7, 0), ( 7,-1), 'Gothic', 6),
         ('GRID',   ( 0, 0), (-1,-1), 0.5, colors.black),
         ('BOX',    ( 0, 0), (-1,-1), 1.8, colors.black),
