@@ -24,7 +24,7 @@ RUN groupadd -g 32767 ofpp && \
     useradd -g 32767 -u 32767 -m -s /bin/bash ofpp
 ENV HOME=/home/ofpp \
     PYENV_ROOT=/home/ofpp/.pyenv \
-    PATH=/home/ofpp/.pyenv/versions/3.6.4/bin:$PATH
+    PATH=/home/ofpp/.pyenv/bin:$PATH
 USER ofpp
 RUN git clone https://github.com/yyuu/pyenv.git /home/ofpp/.pyenv
 RUN eval "$(pyenv init -)" && \
@@ -40,10 +40,15 @@ WORKDIR /app
 USER ofpp
 RUN /home/ofpp/.pyenv/versions/3.6.4/bin/pip install -r requirements.txt
 
-ENV DATABASE_URL=mysql://root:Passw0rd#@localhost:3306/ofpp \
+
+ENV DATABASE_URL=mysql://ofpp:#ofpp#@localhost:3306/ofpp \
     REDIS_URL=redis://localhost:6379/0 \
     PORT=5000 \
-    PATH=/home/ofpp/.pyenv/versions/bin:$PATH
+    PATH=/home/ofpp/.pyenv/versions/3.6.4/bin:$PATH
 EXPOSE 5000
 USER root
+VOLUME /var/lib/mysql
+
+COPY init_db.sh /
+RUN chmod +x /init_db.sh
 CMD ["/usr/bin/supervisord", "-c",  "/etc/supervisord.conf"]
