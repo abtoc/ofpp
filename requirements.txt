@@ -16,3 +16,4 @@ reportlab==3.4.0
 uwsgi==2.0.17
 jsonschema==2.6.0
 redis==2.10.6
+pip-autoremove==0.9.1
