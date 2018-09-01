@@ -130,7 +130,7 @@ class Option(db.Model):
     __table_args__ = {'mysql_engine': 'InnoDB'}
     id        = db.Column(db.String(36), primary_key=True, default=_gen_uuid)
     name      = db.Column(db.String(64), nullable=False, unique=True)
-    value     = db.Column(db.String(65535),nullable=True)
+    value     = db.Column(db.String(8192),nullable=True)
     create_at = db.Column(db.DateTime,    default =_get_now)
     update_at = db.Column(db.DateTime,    onupdate=_get_now)
     @classmethod
