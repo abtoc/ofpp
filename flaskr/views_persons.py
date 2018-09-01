@@ -73,9 +73,9 @@ def create():
         except IntegrityError:
           db.session.rollback()
           flash('同一IDMが指定された可能性が有ります', 'danger')
-        except:
+        except Exception as e:
           db.session.rollback()
-          flash('Error generating person!', 'danger')
+          flash('Error generating person! {}'.format(e.message), 'danger')
     return render_template('persons/create.pug', form=form)
 
 @bp.route('/<id>/edit', methods=('GET','POST'))
@@ -95,9 +95,9 @@ def edit(id):
         except IntegrityError:
           db.session.rollback()
           flash('同一IDMが指定された可能性が有ります', 'danger')
-        except:
+        except Exception as e:
           db.session.rollback()
-          flash('Error update person!', 'danger')
+          flash('Error update person! {}'.format(e.message), 'danger')
     return render_template('persons/edit.pug', form=form)
 
 @bp.route('/<id>/destroy')
@@ -117,7 +117,7 @@ def destroy(id):
     try:
         db.session.commit()
         flash('Person delete successfully.', 'success')
-    except:
+    except Exception as e:
         db.session.rollback()
-        flash('Error delete person!', 'danger')
+        flash('Error delete person! {}'.format(e.message), 'danger')
     return redirect(url_for('persons.index'))

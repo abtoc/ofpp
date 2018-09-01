@@ -7,3 +7,4 @@ instance/
 *.pdf
 nohup.out
 celerybeat-schedule.*
+celerybeat.*
