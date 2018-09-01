@@ -5,7 +5,6 @@ Flask-Script==2.0.6
 Flask-Migrate==2.1.1
 Flask-Login==0.4.1
 Flask-HTTPAuth==3.2.4
-Flask-APScheduler==1.8.0
 Flask-Celery==2.4.3
 WTForms==2.1
 pypugjs==5.6.0

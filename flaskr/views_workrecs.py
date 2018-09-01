@@ -198,3 +198,8 @@ def destroy(id,yymm,dd):
             db.session.rollback()
             flash('Error delete entry!', 'danger')
     return redirect(url_for('workrecs.index',id=id,yymm=yymm))
+
+@bp.route('/<id>/<yymm>/update')
+def update(id, yymm):
+    enabled_workrec.delay(id, yymm)
+    return redirect(url_for('workrecs.index',id=id,yymm=yymm))

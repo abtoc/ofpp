@@ -1,9 +1,11 @@
-from flaskr        import db,scheduler
+from flaskr        import app,db,celery
 from flaskr.models import WorkRec
 from datetime               import datetime
 from dateutil.relativedelta import relativedelta
 
+@celery.task
 def destroy_workrec():
+    app.logger.info('Destroy WorkRec')
     now = datetime.now()
     now = now - relativedelta(years=5)
     yymm = now.strftime('%Y%m')
@@ -11,13 +13,3 @@ def destroy_workrec():
     for workrec in workrecs:
         db.session.delete(workrec)
         db.session.commit()
-
-scheduler.add_job(
-    'job1',
-    destroy_workrec,
-    trigger="cron",
-    hour=12,
-    minute=34,
-    second=0
-)
-scheduler.start()

@@ -6,4 +6,4 @@ instance/
 *.sqlite3
 *.pdf
 nohup.out
-
+celerybeat-schedule.*

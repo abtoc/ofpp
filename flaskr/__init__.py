@@ -1,7 +1,6 @@
 from flask             import Flask
 from flask_login       import LoginManager
 from flask_sqlalchemy  import SQLAlchemy
-from flask_apscheduler import APScheduler
 from flask_httpauth    import HTTPBasicAuth
 from werkzeug.contrib.cache import SimpleCache
 from celery            import Celery
@@ -39,10 +38,8 @@ auth = HTTPBasicAuth()
 db = SQLAlchemy(app)
 cache = SimpleCache()
 
-scheduler = APScheduler()
-scheduler.init_app(app)
-
 celery = make_celery(app)
+celery.conf.update(app.config)
 
 import flaskr.views
 import flaskr.models
