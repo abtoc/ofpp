@@ -92,7 +92,11 @@ def export():
             '"{}"'.format(o.update_at) if bool(p.update_at) else 'NULL'
         )
         print(sql)
-    workrecs = WorkRec.query.all()
+
+@manager.command
+def export2():
+    workrecs = WorkRec.query.filter(WorkRec.export == False).all()
+    print(workrecs)
     for w in workrecs:
         person = Person.get(w.person_id)
         if not person.staff:
@@ -116,13 +120,21 @@ def export():
                 w.dd,
                 '"{}"'.format(w.work_in) if bool(w.work_in) else 'NULL',
                 '"{}"'.format(w.work_out) if bool(w.work_out) else 'NULL',
-                w.value if bool(w.value) else 'NULL',
-                w.break_t if bool(w.break_t) else 'NULL',
-                w.over_t if bool(w.over_t) else 'NULL',
+                'NULL',
+                'NULL',
+                'NULL',
                 1 if w.situation == '欠席' else 0,
                 '"{}"'.format(w.create_at) if bool(w.create_at) else 'NULL',
                 '"{}"'.format(w.update_at) if bool(w.update_at) else 'NULL'
         )
-        print(sql)     
+        print(sql)
+        w.export = True
+        db.session.add(w)
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(e)
+     
 if __name__ == '__main__':
     manager.run()

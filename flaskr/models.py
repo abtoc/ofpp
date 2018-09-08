@@ -64,6 +64,7 @@ class WorkRec(db.Model):
     over_t    = db.Column(db.Float)
     reason    = db.Column(db.String(128))
     enabled   = db.Column(db.Boolean,    nullable=True)
+    export    = db.Column(db.Boolean)
     create_at = db.Column(db.DateTime,   default =_get_now)
     update_at = db.Column(db.DateTime,   onupdate=_get_now)
     @classmethod
