@@ -53,7 +53,7 @@ def export():
         sql = 'INSERT INTO persons(id, name, display, idm, enabled, staff,create_at,update_at) VALUES ({},{},{},{},{},{},{},{});'.format(
             '"{}"'.format(p.id),
             '"{}"'.format(p.name),
-            '"{}"'.format(p.display) if bool(p.display) else 'NULL',
+            '"{}"'.format(p.display) if bool(p.display) or (p.name != p.display) else 'NULL',
             '"{}"'.format(p.idm) if bool(p.idm) else 'NULL',
             '1' if p.enabled else '0',
             '1' if p.staff else '0',
@@ -70,11 +70,12 @@ def export():
                 '"{}"'.format(p.create_at) if bool(p.create_at) else 'NULL',
             )
             print(sql)
+    print('COMMIT;')
     users = User.query.all()
     for u in users:
         if u.userid == 'admin':
             continue
-        sql = 'INSERT INTO users(id, userid, password, create_at, update_at) VALUES({},{},{},{},{});'.format(
+        sql = 'INSERT INTO users(id, enabled, userid, password, create_at, update_at) VALUES({},1,{},{},{},{});'.format(
             '"{}"'.format(u.id),
             '"{}"'.format(u.userid),
             '"{}"'.format(u.password),
@@ -82,6 +83,7 @@ def export():
             '"{}"'.format(u.update_at) if bool(p.update_at) else 'NULL'
         )
         print(sql)
+    print('COMMIT;')
     options = Option.query.all()
     for o in options:
         sql = 'INSERT INTO options(id, name, value, create_at, update_at) VALUES({},{},{},{},{});'.format(
@@ -92,11 +94,11 @@ def export():
             '"{}"'.format(o.update_at) if bool(p.update_at) else 'NULL'
         )
         print(sql)
+    print('COMMIT;')
 
 @manager.command
 def export2():
     workrecs = WorkRec.query.filter(WorkRec.export == False).all()
-    print(workrecs)
     for w in workrecs:
         person = Person.get(w.person_id)
         if not person.staff:
@@ -135,6 +137,7 @@ def export2():
         except Exception as e:
             db.session.rollback()
             print(e)
+    print('COMMIT;')
      
 if __name__ == '__main__':
     manager.run()
